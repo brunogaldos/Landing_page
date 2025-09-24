@@ -1,0 +1,1359 @@
+/* ==========================================================================
+   South Sudan Crisis Group - Main Stylesheet
+   Production-ready, responsive, and accessible CSS
+   ========================================================================== */
+
+/* ==========================================================================
+   CSS Reset and Base Styles
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", "franklin-gothic-urw", Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #e4e4e4;
+    background-color: #000;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 1rem 0;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: clamp(2rem, 5vw, 4.5rem);
+    color: #DFD7D5;
+}
+
+h2 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: #DFD7D5;
+}
+
+h3 {
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    color: #E87722;
+    font-weight: 600;
+}
+
+h4 {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-weight: 600;
+}
+
+p {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    line-height: 1.5;
+    margin: 0 0 1rem 0;
+}
+
+a {
+    color: #E87722;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 0.2em;
+    transition: color 0.3s ease;
+}
+
+a:hover,
+a:focus {
+    color: #FFFFFF;
+    text-decoration-style: solid;
+}
+
+a:visited {
+    color: #E87722;
+}
+
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* ==========================================================================
+   Loading Screen
+   ========================================================================== */
+
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 1s ease-out;
+}
+
+.loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loader-spin {
+    width: 40px;
+    height: 40px;
+    border: 5px solid #333;
+    border-top: 5px solid #d3d3d3;
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Progress Bar
+   ========================================================================== */
+
+.progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #717C7D;
+    z-index: 9998;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #E87722;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* ==========================================================================
+   Scrollytelling Section
+   ========================================================================== */
+
+.scrollytelling-section {
+    position: relative;
+    height: 700vh; /* 7 panels × 100vh each */
+}
+
+/* ==========================================================================
+   Pinned Map Background
+   ========================================================================== */
+
+.pinned-map {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+/* ==========================================================================
+   Scrolling Content Panels
+   ========================================================================== */
+
+.scrolling-content {
+    position: relative;
+    z-index: 2;
+}
+
+.content-panel {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+}
+
+.panel-content {
+    max-width: 600px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    padding: 3rem;
+    color: #fff;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+/* Panel Content Elements */
+.panel-content h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: 1rem;
+    color: #E87722;
+    text-align: center;
+}
+
+.panel-content h2 {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    margin-bottom: 1.5rem;
+    color: #DFD7D5;
+    text-align: center;
+    font-weight: 400;
+}
+
+.panel-content h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 1.5rem;
+    color: #E87722;
+}
+
+.panel-content p {
+    font-size: clamp(1rem, 2vw, 1.1rem);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.panel-content ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 1.5rem 0;
+}
+
+.panel-content li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.panel-content li::before {
+    content: '•';
+    color: #E87722;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+/* Visual Panel Styles */
+.visual-container {
+    margin: 2rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.visual-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.visual-credit {
+    font-size: 0.9rem;
+    font-style: italic;
+    text-align: center;
+    margin-top: 1rem;
+    opacity: 0.8;
+}
+
+/* Data Panel Styles */
+.data-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.data-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.data-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #E87722;
+    margin-bottom: 0.5rem;
+}
+
+.data-label {
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.8;
+}
+
+/* Post-Scrollytelling Content */
+.post-scrollytelling {
+    padding: 4rem 2rem;
+    background: #f8f9fa;
+    color: #333;
+}
+
+.post-scrollytelling h2 {
+    color: #E87722;
+    margin-bottom: 1.5rem;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: #E87722;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+    background: #FFB81C;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ==========================================================================
+   Responsive Layout
+   ========================================================================== */
+
+/* Desktop: Split layout (map on left, panels on right) */
+@media (min-width: 1024px) {
+    .scrollytelling-section {
+        display: flex;
+        height: 100vh;
+    }
+    
+    .pinned-map {
+        position: sticky;
+        top: 0;
+        width: 50vw;
+        height: 100vh;
+        flex-shrink: 0;
+    }
+    
+    .scrolling-content {
+        width: 50vw;
+        overflow-y: auto;
+        height: 100vh;
+    }
+    
+    .content-panel {
+        height: auto;
+        min-height: 100vh;
+        padding: 2rem;
+    }
+    
+    .panel-content {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+}
+
+/* Tablet: Stacked layout with larger panels */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .panel-content {
+        max-width: 700px;
+        padding: 2.5rem;
+    }
+    
+    .data-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile: Stacked layout (map behind, panels overlay) */
+@media (max-width: 767px) {
+    .scrollytelling-section {
+        height: 700vh;
+    }
+    
+    .pinned-map {
+        position: sticky;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+    }
+    
+    .scrolling-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .content-panel {
+        height: 100vh;
+        padding: 1rem;
+    }
+    
+    .panel-content {
+        max-width: 100%;
+        padding: 2rem;
+        margin: 0 1rem;
+    }
+    
+    .data-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .data-item {
+        padding: 1rem;
+    }
+    
+    .data-number {
+        font-size: 1.5rem;
+    }
+}
+
+/* ==========================================================================
+   Unpinned Map State
+   ========================================================================== */
+
+.scrollytelling-ended .pinned-map {
+    position: relative;
+    height: 50vh;
+    width: 100%;
+}
+
+.scrollytelling-ended .scrollytelling-section {
+    height: auto;
+}
+
+.scrollytelling-ended .scrolling-content {
+    position: relative;
+    z-index: 1;
+}
+
+.scrollytelling-ended .content-panel {
+    height: auto;
+    min-height: auto;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.scrollytelling-ended .panel-content {
+    position: relative;
+    background: rgba(0, 0, 0, 0.9);
+    margin: 0;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.header {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    padding: 2vh 2vw;
+    text-align: center;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.logo {
+    position: absolute;
+    top: 3%;
+    right: 5%;
+    width: clamp(50px, 8vw, 150px);
+    height: clamp(50px, 8vw, 150px);
+    object-fit: contain;
+}
+
+.main-title {
+    margin: 10% auto 1%;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    max-width: 80%;
+}
+
+.subtitle {
+    margin: 0 auto 2%;
+    text-align: center;
+    font-weight: 500;
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: #DFD7D5;
+    max-width: 70%;
+}
+
+.hedp {
+    text-align: center;
+    font-style: italic;
+    font-size: clamp(1rem, 2vw, 1.6rem);
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+    max-width: 60%;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* ==========================================================================
+   Explore Button
+   ========================================================================== */
+
+.explore-btn {
+    display: block;
+    margin: 2% auto 0;
+    padding: 1rem 2rem;
+    background: transparent;
+    border: 2px solid #c0afa5;
+    color: #E1E0E0;
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-family: inherit;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    max-width: 200px;
+}
+
+.explore-btn:hover,
+.explore-btn:focus {
+    background-color: #fff;
+    color: #000;
+    border-color: #fff;
+    outline: 2px solid #E87722;
+    outline-offset: 2px;
+}
+
+.explore-btn.active {
+    background-color: #fff;
+    color: #000;
+}
+
+/* ==========================================================================
+   Map Inset
+   ========================================================================== */
+
+.map-inset {
+    position: fixed;
+    bottom: 50px;
+    right: 30px;
+    width: clamp(200px, 25vw, 250px);
+    height: 180px;
+    max-width: 100%;
+    z-index: 2;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    pointer-events: none;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   Main Content Sections
+   ========================================================================== */
+
+.main-content {
+    position: relative;
+    z-index: 3;
+}
+
+.section {
+    padding: 20vh 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step {
+    padding-bottom: 50vh;
+}
+
+.content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* ==========================================================================
+   Section Types
+   ========================================================================== */
+
+.intro-section .step {
+    margin-top: 50%;
+}
+
+.narrative-section .step {
+    background-image: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0) 59%,
+        rgba(0, 0, 0, 0.95) 100%
+    );
+    padding: 5% 0;
+}
+
+.video-section .step {
+    background-image: url('../assets/texturebg.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    padding: 5px 0;
+}
+
+.chart-section .step {
+    background-color: #5f3830;
+    width: 60vw;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.end-section .step {
+    background-color: #5f3830;
+}
+
+/* ==========================================================================
+   Content Layouts
+   ========================================================================== */
+
+.centered {
+    width: 50vw;
+    margin: 0 auto;
+}
+
+.lefty {
+    width: 33vw;
+}
+
+.righty {
+    width: 33vw;
+    margin-left: 67vw;
+}
+
+.fully {
+    width: 100%;
+    margin: auto;
+}
+
+.light {
+    color: #444;
+    background-color: #5f3830;
+    border-radius: 25px;
+    padding: 2rem;
+}
+
+.lefty .light {
+    border-radius: 0 25px 25px 0;
+}
+
+.righty .light {
+    border-radius: 25px 0 0 25px;
+}
+
+/* ==========================================================================
+   Video Styles
+   ========================================================================== */
+
+.html-video-container {
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+    opacity: 1;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #f0f0f0;
+}
+
+.video-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ==========================================================================
+   Chart Container
+   ========================================================================== */
+
+.chart-container {
+    width: 100%;
+    height: 400px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+/* ==========================================================================
+   Legend Styles
+   ========================================================================== */
+
+.legend {
+    position: fixed;
+    bottom: 30px;
+    color: #E4E4E4;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 8px;
+    display: none;
+    z-index: 2;
+    font-family: inherit;
+    font-weight: 400;
+    backdrop-filter: blur(10px);
+}
+
+.left-legend {
+    left: 30px;
+}
+
+.right-legend {
+    right: 30px;
+}
+
+.legend h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+}
+
+.legend-ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.legend-ul li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.legend span {
+    display: inline-block;
+    width: 20px;
+    height: 12px;
+    margin-right: 0.5rem;
+    border-radius: 4px;
+}
+
+.endleg {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    color: #E4E4E4;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 1rem;
+    border-radius: 8px;
+    display: none;
+    z-index: 2;
+    backdrop-filter: blur(10px);
+}
+
+/* ==========================================================================
+   Legend Colors
+   ========================================================================== */
+
+.green {
+    background-color: #5a7e71;
+}
+
+.red {
+    background-color: #b65d61;
+}
+
+.oj {
+    background-color: #ed924e;
+}
+
+.blue {
+    background-color: #457d97;
+}
+
+.rain {
+    background-color: #003e51;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.footer {
+    width: 100%;
+    min-height: 20vh;
+    padding: 2rem;
+    background-image: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0) 59%,
+        rgba(0, 0, 0, 0.95) 100%
+    ), url('../assets/texturebg.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    position: relative;
+    z-index: 5;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.data-sources {
+    color: #CCC;
+    font-size: 0.9rem;
+}
+
+.data-sources h4 {
+    color: #E87722;
+    margin-bottom: 1rem;
+}
+
+.data-sources ul {
+    list-style-type: square;
+    padding-left: 1.5rem;
+}
+
+.data-sources li {
+    margin-bottom: 0.5rem;
+}
+
+.credits {
+    text-align: right;
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.credits p {
+    margin-bottom: 0.5rem;
+}
+
+/* ==========================================================================
+   Responsive Design - Mobile First
+   ========================================================================== */
+
+/* Small devices (phones, 320px and up) */
+@media (max-width: 480px) {
+    .header {
+        padding: 1rem;
+    }
+    
+    .logo {
+        position: static;
+        margin: 0 auto 1rem;
+        display: block;
+    }
+    
+    .main-title {
+        margin: 1rem auto;
+        font-size: 1.5rem;
+    }
+    
+    .hedp {
+        display: none;
+    }
+    
+    .explore-btn {
+        display: none;
+    }
+    
+    .map-inset {
+        display: none;
+    }
+    
+    .section {
+        padding: 10vh 0;
+    }
+    
+    .content-wrapper {
+        padding: 0 1rem;
+    }
+    
+    .light {
+        padding: 1rem;
+        border-radius: 15px;
+    }
+    
+    .centered,
+    .lefty,
+    .righty,
+    .fully {
+        width: 90vw;
+        margin: 0 auto;
+    }
+    
+    .lefty .light,
+    .righty .light {
+        border-radius: 15px;
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .credits {
+        text-align: left;
+    }
+    
+    .legend {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .legend span {
+        width: 16px;
+        height: 10px;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 481px) and (max-width: 768px) {
+    .logo {
+        width: 75px;
+        height: 75px;
+    }
+    
+    .main-title {
+        font-size: 2rem;
+    }
+    
+    .hedp {
+        font-size: 1.1rem;
+        max-width: 80%;
+    }
+    
+    .explore-btn {
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+    }
+    
+    .map-inset {
+        width: 200px;
+        height: 150px;
+    }
+    
+    .section {
+        padding: 15vh 0;
+    }
+    
+    .content-wrapper {
+        padding: 0 1.5rem;
+    }
+}
+
+/* Large devices (desktops, 1024px and up) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .logo {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .main-title {
+        font-size: 3rem;
+    }
+    
+    .hedp {
+        font-size: 1.3rem;
+        max-width: 70%;
+    }
+    
+    .explore-btn {
+        font-size: 1.1rem;
+    }
+    
+    .map-inset {
+        width: 220px;
+        height: 160px;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1025px) {
+    .main-title {
+        font-size: 4.5rem;
+    }
+    
+    .hedp {
+        font-size: 1.6rem;
+        max-width: 60%;
+    }
+    
+    .explore-btn {
+        font-size: 1.25rem;
+    }
+}
+
+/* ==========================================================================
+   Accessibility Improvements
+   ========================================================================== */
+
+/* Focus styles */
+*:focus {
+    outline: 2px solid #E87722;
+    outline-offset: 2px;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .light {
+        background-color: #000;
+        color: #fff;
+        border: 2px solid #fff;
+    }
+    
+    .legend,
+    .endleg {
+        background: #000;
+        border: 2px solid #fff;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+    .map-container,
+    .map-inset,
+    .explore-btn,
+    .legend,
+    .endleg,
+    .loader {
+        display: none !important;
+    }
+    
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .header {
+        position: static;
+        background: white;
+    }
+    
+    .main-content {
+        position: static;
+    }
+    
+    .section {
+        page-break-inside: avoid;
+        padding: 1rem 0;
+    }
+}
+
+/* ==========================================================================
+   Mapbox Overrides
+   ========================================================================== */
+
+.mapboxgl-ctrl-attrib-inner {
+    padding-right: 15px !important;
+}
+
+.mapboxgl-ctrl-top-right {
+    top: 1% !important;
+    right: 1% !important;
+}
+
+.mapboxgl-popup-content {
+    font-family: inherit;
+    color: #000;
+}
+
+.mapboxgl-popup-content strong {
+    font-size: 14px;
+    color: #000;
+}
+
+.mapboxgl-popup-content p {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #000;
+}
+
+.mapboxgl-popup-close-button {
+    font-size: 24px;
+}
+
+/* Touch device fixes */
+.mapboxgl-canvas-container.mapboxgl-touch-zoom-rotate.mapboxgl-touch-drag-pan,
+.mapboxgl-canvas-container.mapboxgl-touch-zoom-rotate.mapboxgl-touch-drag-pan .mapboxgl-canvas {
+    touch-action: unset;
+}
+
+/* ==========================================================================
+   Scrollytelling Effects
+   ========================================================================== */
+
+.step {
+    position: relative;
+    z-index: 2;
+}
+
+.step::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.1) 0%,
+        rgba(0, 0, 0, 0.3) 50%,
+        rgba(0, 0, 0, 0.1) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    pointer-events: none;
+}
+
+.step.active::before {
+    opacity: 1;
+}
+
+.step h2,
+.step h3 {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
+}
+
+.step.active h2,
+.step.active h3 {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.step p {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease 0.4s, transform 0.8s ease 0.4s;
+}
+
+.step.active p {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.step ul {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease 0.6s, transform 0.8s ease 0.6s;
+}
+
+.step.active ul {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.step li {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.step.active li {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.step.active li:nth-child(1) { transition-delay: 0.8s; }
+.step.active li:nth-child(2) { transition-delay: 0.9s; }
+.step.active li:nth-child(3) { transition-delay: 1.0s; }
+.step.active li:nth-child(4) { transition-delay: 1.1s; }
+
+/* Enhanced visual effects for active steps */
+.step.active .light {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: scale(1.02);
+    transition: box-shadow 0.8s ease, transform 0.8s ease;
+}
+
+/* ==========================================================================
+   Map Controls
+   ========================================================================== */
+
+.map-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.map-control-btn {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.map-control-btn:hover,
+.map-control-btn:focus {
+    background: #fff;
+    border-color: #E87722;
+    outline: 2px solid #E87722;
+    outline-offset: 2px;
+    transform: scale(1.05);
+}
+
+.map-control-btn:active {
+    transform: scale(0.95);
+}
+
+/* ==========================================================================
+   Map Fallback
+   ========================================================================== */
+
+.map-fallback {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+}
+
+.fallback-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.7;
+}
+
+.fallback-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 400px;
+}
+
+.fallback-content h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+    color: #E87722;
+}
+
+.fallback-content p {
+    margin: 0 0 1.5rem 0;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.fallback-link {
+    display: inline-block;
+    background: #E87722;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.fallback-link:hover,
+.fallback-link:focus {
+    background: #FFB81C;
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}

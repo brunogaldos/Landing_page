@@ -1,0 +1,35 @@
+{
+  "name": "south-sudan-crisis-group",
+  "version": "1.0.0",
+  "description": "Interactive map and narrative about South Sudan crisis",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 server.py",
+    "dev": "python3 server.py",
+    "build": "echo 'Production build complete - files are ready for deployment'",
+    "test": "echo 'No tests configured yet'"
+  },
+  "keywords": [
+    "south-sudan",
+    "crisis",
+    "map",
+    "interactive",
+    "responsive",
+    "accessibility"
+  ],
+  "author": "Crisis Group",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crisisgroup/south-sudan-interactive"
+  },
+  "bugs": {
+    "url": "https://github.com/crisisgroup/south-sudan-interactive/issues"
+  },
+  "homepage": "https://github.com/crisisgroup/south-sudan-interactive#readme"
+}

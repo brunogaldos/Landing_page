@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive map and narrative about South Sudan crisis">
+    <meta name="keywords" content="South Sudan, crisis, map, interactive, narrative">
+    <title>South Sudan Crisis - Interactive Map</title>
+    
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="styles/main.css">
+    
+    <!-- Mapbox CSS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading screen -->
+    <div id="loader" class="loader" role="status" aria-label="Loading content">
+        <div id="loaderSpin" class="loader-spin" aria-hidden="true"></div>
+        <span class="sr-only">Loading interactive map...</span>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-container" role="progressbar" aria-label="Reading progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Scrollytelling Section -->
+    <div class="scrollytelling-section">
+        
+        <!-- Pinned Map Background -->
+        <div id="map" class="pinned-map" role="application" aria-label="Interactive map showing Arequipa, Peru" data-mapbox-token="MAPBOX_TOKEN_HERE"></div>
+        
+        <!-- Scrolling Content Panels -->
+        <div class="scrolling-content">
+            
+            <!-- Panel 1: Introduction -->
+            <div class="content-panel" data-map-state="intro">
+                <div class="panel-content">
+                    <img src="assets/logo.svg" alt="Crisis Group Logo" class="logo" width="150" height="150">
+                    <h1 class="main-title">Arequipa, Peru</h1>
+                    <h2 class="subtitle">The White City of the Andes</h2>
+                    <p class="hedp">An immersive journey through the historic city of Arequipa, featuring interactive maps, cultural insights, and architectural wonders nestled in the Peruvian Andes.</p>
+                </div>
+            </div>
+
+            <!-- Panel 2: Historical Foundation -->
+            <div class="content-panel" data-map-state="historical">
+                <div class="panel-content">
+                    <h3>Historical Foundation</h3>
+                    <p>Founded in 1540 by Spanish conquistadors, Arequipa was built on the site of ancient Inca settlements. The city's unique architecture reflects the fusion of Spanish colonial and indigenous Andean influences.</p>
+                    <p>The city's strategic location in the Andes made it a crucial stop on the trade routes between the coast and the highlands, contributing to its economic and cultural significance.</p>
+                    <ul>
+                        <li>UNESCO World Heritage Site since 2000</li>
+                        <li>Built with white volcanic stone (sillar)</li>
+                        <li>Center of the Arequipa region</li>
+                        <li>Population: Over 1 million inhabitants</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Panel 3: Architectural Marvels -->
+            <div class="content-panel" data-map-state="architectural">
+                <div class="panel-content">
+                    <h3>Architectural Marvels</h3>
+                    <p>The historic center of Arequipa showcases magnificent colonial architecture, including the iconic Santa Catalina Monastery, the Cathedral, and numerous baroque churches that define the city's skyline.</p>
+                    <p>The use of white volcanic stone (sillar) gives the city its distinctive appearance and earned it the nickname "La Ciudad Blanca" (The White City).</p>
+                    <p>Key architectural landmarks include the Monastery of Santa Catalina, a 20,000-square-meter complex that served as a cloistered convent for over 400 years.</p>
+                </div>
+            </div>
+
+            <!-- Panel 4: Cultural Heritage -->
+            <div class="content-panel" data-map-state="cultural">
+                <div class="panel-content">
+                    <h3>Cultural Heritage</h3>
+                    <p>Arequipa is a vibrant cultural center, home to traditional festivals, exquisite cuisine, and a thriving arts scene that celebrates both its colonial past and contemporary Peruvian identity.</p>
+                    <p>The city is renowned for its gastronomy, particularly its spicy cuisine that reflects the fusion of Spanish and indigenous flavors. Arequipa is considered the culinary capital of Peru.</p>
+                    <p>Traditional festivals like the Feast of the Virgin of Chapi and the Arequipa Carnival showcase the city's rich cultural traditions and religious heritage.</p>
+                </div>
+            </div>
+
+            <!-- Panel 5: Visual Journey -->
+            <div class="content-panel" data-map-state="visual">
+                <div class="panel-content">
+                    <h3>Visual Journey</h3>
+                    <div class="visual-container">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop" 
+                             alt="Arequipa, Peru - Historic cityscape with colonial architecture" 
+                             class="visual-image">
+                    </div>
+                    <p class="visual-credit">Image: Arequipa's historic colonial architecture</p>
+                </div>
+            </div>
+
+            <!-- Panel 6: City Data -->
+            <div class="content-panel" data-map-state="data">
+                <div class="panel-content">
+                    <h3>City Data</h3>
+                    <div class="data-container">
+                        <div class="data-item">
+                            <span class="data-number">1M+</span>
+                            <span class="data-label">Population</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-number">2,335m</span>
+                            <span class="data-label">Elevation</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-number">1540</span>
+                            <span class="data-label">Founded</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-number">2000</span>
+                            <span class="data-label">UNESCO Heritage</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 7: Conclusion -->
+            <div class="content-panel" data-map-state="conclusion">
+                <div class="panel-content">
+                    <h3>Modern Arequipa</h3>
+                    <p>Today, Arequipa continues to thrive as a major economic and cultural hub in southern Peru, balancing preservation of its historic heritage with modern development and innovation.</p>
+                    <p>The city serves as a gateway to the Colca Canyon and other natural wonders, making it a vital center for tourism and regional development.</p>
+                </div>
+            </div>
+
+        </div>
+        
+    </div>
+
+    <!-- Regular page content after scrollytelling -->
+    <main class="main-content" role="main">
+        <section class="post-scrollytelling">
+            <div class="content-wrapper">
+                <h2>Explore More</h2>
+                <p>Continue your journey through Arequipa's rich history and culture. Visit the historic center, explore the Santa Catalina Monastery, and discover the city's vibrant culinary scene.</p>
+                <div class="cta-buttons">
+                    <a href="https://www.google.com/maps/place/Arequipa,+Peru/@-16.4090,-71.5375,13z" target="_blank" rel="noopener noreferrer" class="cta-button">
+                        View on Google Maps
+                    </a>
+                    <a href="https://whc.unesco.org/en/list/1016/" target="_blank" rel="noopener noreferrer" class="cta-button">
+                        UNESCO Heritage Site
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="footer" class="footer" role="contentinfo">
+        <div class="footer-content">
+            <div class="data-sources">
+                <h4>Sources & Credits</h4>
+                <ul>
+                    <li>UNESCO World Heritage Centre</li>
+                    <li>Peru Tourism Board</li>
+                    <li>Arequipa Regional Government</li>
+                    <li>Historical archives and cultural institutions</li>
+                </ul>
+            </div>
+            <div class="credits">
+                <p>&copy; 2024 Arequipa Interactive Experience. All rights reserved.</p>
+                <p>This interactive experience celebrates the cultural heritage of Arequipa, Peru.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Legend -->
+    <div class="legend left-legend" id="leftLegend" role="region" aria-label="Map legend">
+        <h4>Historic Sites</h4>
+        <ul class="legend-ul">
+            <li><span class="red"></span>Cathedral & Plaza</li>
+            <li><span class="oj"></span>Santa Catalina Monastery</li>
+            <li><span class="green"></span>Historic Churches</li>
+        </ul>
+    </div>
+
+    <div class="legend right-legend" id="rightLegend" role="region" aria-label="Additional map legend">
+        <h4>City Districts</h4>
+        <ul class="legend-ul">
+            <li><span class="blue"></span>Historic Center</li>
+            <li><span class="rain"></span>Modern Districts</li>
+        </ul>
+    </div>
+
+    <!-- End legend -->
+    <div class="endleg" id="endLegend" role="region" aria-label="Final map legend">
+        <h4>City Overview</h4>
+        <div>
+            <span class="red"></span>Historic landmarks
+            <span class="blue"></span>Urban areas
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
