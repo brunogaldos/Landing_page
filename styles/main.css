@@ -183,15 +183,12 @@ a:visited {
 
 .scrollytelling-section {
     position: relative;
-    height: 700vh; /* 7 panels × 100vh each */
+    height: 100vh;
+    overflow: hidden;
 }
 
-/* ==========================================================================
-   Pinned Map Background
-   ========================================================================== */
-
 .pinned-map {
-    position: sticky;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
@@ -199,51 +196,94 @@ a:visited {
     z-index: 1;
 }
 
-/* ==========================================================================
-   Scrolling Content Panels
-   ========================================================================== */
+/* Unpinned map state */
+#map:not(.pinned-map) {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    z-index: auto;
+}
 
 .scrolling-content {
     position: relative;
     z-index: 2;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .content-panel {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 2rem;
     position: relative;
 }
 
+/* Panel positioning - alternate sides */
+.panel-center {
+    justify-content: center;
+}
+
+.panel-left {
+    justify-content: flex-start;
+    padding-left: 2rem;
+}
+
+.panel-right {
+    justify-content: flex-end;
+    padding-right: 2rem;
+}
+
 .panel-content {
-    max-width: 600px;
+    max-width: 400px;
     width: 100%;
     background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(15px);
-    border-radius: 16px;
-    padding: 3rem;
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 2rem;
     color: #fff;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    position: relative;
+    margin: 0 1rem;
+}
+
+/* Panel Types */
+.header-panel .panel-content {
+    background: rgba(0, 0, 0, 0.9);
+    text-align: center;
+    max-width: 600px;
+}
+
+.narrative-panel .panel-content {
+    background: rgba(95, 56, 48, 0.9);
+}
+
+.visual-panel .panel-content {
+    background: rgba(232, 119, 34, 0.9);
+}
+
+.data-panel .panel-content {
+    background: rgba(255, 184, 28, 0.9);
+    color: #000;
+}
+
+.conclusion-panel .panel-content {
+    background: rgba(0, 0, 0, 0.9);
 }
 
 /* Panel Content Elements */
 .panel-content h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-size: clamp(2rem, 5vw, 4rem);
     margin-bottom: 1rem;
     color: #E87722;
-    text-align: center;
 }
 
 .panel-content h2 {
-    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
     margin-bottom: 1.5rem;
     color: #DFD7D5;
-    text-align: center;
-    font-weight: 400;
 }
 
 .panel-content h3 {
@@ -253,7 +293,7 @@ a:visited {
 }
 
 .panel-content p {
-    font-size: clamp(1rem, 2vw, 1.1rem);
+    font-size: clamp(1rem, 2vw, 1.2rem);
     line-height: 1.6;
     margin-bottom: 1.5rem;
 }
@@ -281,9 +321,9 @@ a:visited {
 /* Visual Panel Styles */
 .visual-container {
     margin: 2rem 0;
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 .visual-image {
@@ -303,8 +343,8 @@ a:visited {
 /* Data Panel Styles */
 .data-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
     margin: 2rem 0;
 }
 
@@ -312,13 +352,13 @@ a:visited {
     text-align: center;
     padding: 1.5rem;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .data-number {
     display: block;
-    font-size: 2rem;
+    font-size: 2.5rem;
     font-weight: bold;
     color: #E87722;
     margin-bottom: 0.5rem;
@@ -326,7 +366,7 @@ a:visited {
 
 .data-label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     opacity: 0.8;
@@ -337,6 +377,8 @@ a:visited {
     padding: 4rem 2rem;
     background: #f8f9fa;
     color: #333;
+    position: relative;
+    z-index: 3;
 }
 
 .post-scrollytelling h2 {
@@ -366,130 +408,6 @@ a:visited {
     background: #FFB81C;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* ==========================================================================
-   Responsive Layout
-   ========================================================================== */
-
-/* Desktop: Split layout (map on left, panels on right) */
-@media (min-width: 1024px) {
-    .scrollytelling-section {
-        display: flex;
-        height: 100vh;
-    }
-    
-    .pinned-map {
-        position: sticky;
-        top: 0;
-        width: 50vw;
-        height: 100vh;
-        flex-shrink: 0;
-    }
-    
-    .scrolling-content {
-        width: 50vw;
-        overflow-y: auto;
-        height: 100vh;
-    }
-    
-    .content-panel {
-        height: auto;
-        min-height: 100vh;
-        padding: 2rem;
-    }
-    
-    .panel-content {
-        max-width: 500px;
-        margin: 0 auto;
-    }
-}
-
-/* Tablet: Stacked layout with larger panels */
-@media (min-width: 768px) and (max-width: 1023px) {
-    .panel-content {
-        max-width: 700px;
-        padding: 2.5rem;
-    }
-    
-    .data-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/* Mobile: Stacked layout (map behind, panels overlay) */
-@media (max-width: 767px) {
-    .scrollytelling-section {
-        height: 700vh;
-    }
-    
-    .pinned-map {
-        position: sticky;
-        top: 0;
-        width: 100vw;
-        height: 100vh;
-    }
-    
-    .scrolling-content {
-        position: relative;
-        z-index: 2;
-    }
-    
-    .content-panel {
-        height: 100vh;
-        padding: 1rem;
-    }
-    
-    .panel-content {
-        max-width: 100%;
-        padding: 2rem;
-        margin: 0 1rem;
-    }
-    
-    .data-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-    }
-    
-    .data-item {
-        padding: 1rem;
-    }
-    
-    .data-number {
-        font-size: 1.5rem;
-    }
-}
-
-/* ==========================================================================
-   Unpinned Map State
-   ========================================================================== */
-
-.scrollytelling-ended .pinned-map {
-    position: relative;
-    height: 50vh;
-    width: 100%;
-}
-
-.scrollytelling-ended .scrollytelling-section {
-    height: auto;
-}
-
-.scrollytelling-ended .scrolling-content {
-    position: relative;
-    z-index: 1;
-}
-
-.scrollytelling-ended .content-panel {
-    height: auto;
-    min-height: auto;
-    padding: 2rem;
-    margin-bottom: 2rem;
-}
-
-.scrollytelling-ended .panel-content {
-    position: relative;
-    background: rgba(0, 0, 0, 0.9);
-    margin: 0;
 }
 
 /* ==========================================================================
@@ -896,8 +814,66 @@ a:visited {
 }
 
 /* ==========================================================================
-   Responsive Design - Mobile First
+   Responsive Scrollytelling
    ========================================================================== */
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .scrollytelling-section {
+        height: auto;
+        min-height: 100vh;
+    }
+    
+    .scrolling-content {
+        height: auto;
+        overflow-y: visible;
+    }
+    
+    .content-panel {
+        min-height: 80vh;
+        padding: 1rem;
+        justify-content: center;
+    }
+    
+    .panel-left,
+    .panel-right {
+        justify-content: center;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .panel-content {
+        max-width: 90%;
+        margin: 0;
+        padding: 1.5rem;
+    }
+    
+    .header-panel .panel-content {
+        max-width: 95%;
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .panel-content {
+        max-width: 350px;
+    }
+    
+    .header-panel .panel-content {
+        max-width: 500px;
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 1025px) {
+    .panel-content {
+        max-width: 400px;
+    }
+    
+    .header-panel .panel-content {
+        max-width: 600px;
+    }
+}
 
 /* Small devices (phones, 320px and up) */
 @media (max-width: 480px) {

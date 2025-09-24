@@ -12,7 +12,6 @@ class ArequipaScrollMap {
         this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         this.contentPanels = [];
         this.currentPanelIndex = 0;
-        this.isScrollytellingActive = true;
         
         // Arequipa coordinates
         this.targetCenter = [-71.5375, -16.4090];
@@ -136,7 +135,7 @@ class ArequipaScrollMap {
                 }
             });
         }, {
-            threshold: 0.6,
+            threshold: 0.6, // Trigger when panel is 60% visible
             rootMargin: '-10% 0px -10% 0px'
         });
 
@@ -145,71 +144,66 @@ class ArequipaScrollMap {
             panelObserver.observe(panel);
         });
 
-        // Setup scroll listener to detect when scrollytelling section ends
-        this.setupScrollListener();
-
         // Set initial map state
         this.updateMapState('intro');
-    }
-
-    /**
-     * Setup scroll listener for unpinning
-     */
-    setupScrollListener() {
-        let ticking = false;
         
-        const handleScroll = () => {
-            if (!ticking) {
-                requestAnimationFrame(() => {
-                    this.checkScrollytellingEnd();
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll, { passive: true });
+        // Setup scrollytelling section observer to unpin map
+        this.setupScrollytellingObserver();
     }
 
     /**
-     * Check if scrollytelling section has ended
+     * Setup observer to unpin map after scrollytelling section
      */
-    checkScrollytellingEnd() {
+    setupScrollytellingObserver() {
         const scrollytellingSection = document.querySelector('.scrollytelling-section');
         if (!scrollytellingSection) return;
 
-        const sectionRect = scrollytellingSection.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        
-        // If the scrollytelling section is completely above the viewport
-        if (sectionRect.bottom < 0 && this.isScrollytellingActive) {
-            this.unpinMap();
+        const unpinObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) {
+                    // Scrollytelling section is out of view, unpin the map
+                    this.unpinMap();
+                } else {
+                    // Scrollytelling section is in view, pin the map
+                    this.pinMap();
+                }
+            });
+        }, {
+            threshold: 0,
+            rootMargin: '0px'
+        });
+
+        unpinObserver.observe(scrollytellingSection);
+    }
+
+    /**
+     * Pin the map for scrollytelling
+     */
+    pinMap() {
+        if (this.mapContainer) {
+            this.mapContainer.classList.add('pinned-map');
+            this.mapContainer.style.position = 'fixed';
+            this.mapContainer.style.top = '0';
+            this.mapContainer.style.left = '0';
+            this.mapContainer.style.width = '100vw';
+            this.mapContainer.style.height = '100vh';
+            this.mapContainer.style.zIndex = '1';
         }
     }
 
     /**
-     * Unpin the map and enable normal scrolling
+     * Unpin the map after scrollytelling
      */
     unpinMap() {
-        if (!this.isScrollytellingActive) return;
-        
-        this.isScrollytellingActive = false;
-        
-        // Add class to enable normal scrolling
-        document.body.classList.add('scrollytelling-ended');
-        
-        // Enable map interaction
-        if (this.map) {
-            this.map.dragPan.enable();
-            this.map.scrollZoom.enable();
-            this.map.boxZoom.enable();
-            this.map.dragRotate.enable();
-            this.map.keyboard.enable();
-            this.map.doubleClickZoom.enable();
-            this.map.touchZoomRotate.enable();
+        if (this.mapContainer) {
+            this.mapContainer.classList.remove('pinned-map');
+            this.mapContainer.style.position = 'relative';
+            this.mapContainer.style.top = 'auto';
+            this.mapContainer.style.left = 'auto';
+            this.mapContainer.style.width = '100%';
+            this.mapContainer.style.height = '400px';
+            this.mapContainer.style.zIndex = 'auto';
         }
-        
-        console.log('Map unpinned - normal scrolling enabled');
     }
 
     /**
@@ -237,7 +231,7 @@ class ArequipaScrollMap {
      * Update map state based on panel
      */
     updateMapState(stateKey) {
-        if (!this.map || !this.isLoaded || !this.isScrollytellingActive) return;
+        if (!this.map || !this.isLoaded) return;
 
         const mapState = this.mapStates[stateKey];
         if (!mapState) {
