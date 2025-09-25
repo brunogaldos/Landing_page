@@ -21,11 +21,11 @@ html {
 body {
     margin: 0;
     padding: 0;
-    font-family: "Roboto", "franklin-gothic-urw", Arial, sans-serif;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
     font-size: 1rem;
     line-height: 1.6;
-    color: #e4e4e4;
-    background-color: #000;
+    color: #ffffff;
+    background-color: #44546a;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -43,18 +43,21 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
     font-size: clamp(2rem, 5vw, 4.5rem);
-    color: #DFD7D5;
+    color: #FFFFFF;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 h2 {
     font-size: clamp(1.5rem, 4vw, 2.5rem);
-    color: #DFD7D5;
+    color: #FFFFFF;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 h3 {
     font-size: clamp(1.25rem, 3vw, 1.5rem);
-    color: #E87722;
+    color: #4effd0;
     font-weight: 600;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 h4 {
@@ -69,12 +72,13 @@ p {
 }
 
 a {
-    color: #E87722;
+    color: #4effd0;
     font-weight: 600;
     text-decoration: underline;
     text-decoration-style: dotted;
     text-underline-offset: 0.2em;
     transition: color 0.3s ease;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 a:hover,
@@ -84,7 +88,7 @@ a:focus {
 }
 
 a:visited {
-    color: #E87722;
+    color: #4effd0;
 }
 
 /* ==========================================================================
@@ -251,49 +255,57 @@ a:visited {
 
 /* Panel Types */
 .header-panel .panel-content {
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(68, 84, 106, 0.95);
     text-align: center;
     max-width: 600px;
+    border: 1px solid rgba(78, 255, 208, 0.3);
 }
 
 .narrative-panel .panel-content {
-    background: rgba(95, 56, 48, 0.9);
+    background: rgba(68, 84, 106, 0.9);
+    border: 1px solid rgba(78, 255, 208, 0.2);
 }
 
 .visual-panel .panel-content {
-    background: rgba(232, 119, 34, 0.9);
+    background: rgba(68, 84, 106, 0.9);
+    border: 1px solid rgba(78, 255, 208, 0.2);
 }
 
 .data-panel .panel-content {
-    background: rgba(255, 184, 28, 0.9);
-    color: #000;
+    background: rgba(78, 255, 208, 0.15);
+    color: #ffffff;
+    border: 1px solid rgba(78, 255, 208, 0.4);
 }
 
 .conclusion-panel .panel-content {
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(68, 84, 106, 0.95);
+    border: 1px solid rgba(78, 255, 208, 0.3);
 }
 
 /* Panel Content Elements */
 .panel-content h1 {
     font-size: clamp(1.5rem, 3.5vw, 2.5rem);
     margin-bottom: 1rem;
-    color: #E87722;
+    color: #4effd0;
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: 0.15em;
     text-align: center;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .panel-content h2 {
     font-size: clamp(1.5rem, 4vw, 2.5rem);
     margin-bottom: 1.5rem;
-    color: #DFD7D5;
+    color: #FFFFFF;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .panel-content h3 {
     font-size: clamp(1.5rem, 3vw, 2rem);
     margin-bottom: 1.5rem;
-    color: #E87722;
+    color: #4effd0;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .panel-content p {
@@ -433,26 +445,121 @@ a:visited {
    ========================================================================== */
 
 .header {
+    background-color: #44546a;
+    backdrop-filter: blur(10px);
+    background-image: none;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    z-index: 10000;
+    padding: 0;
     position: relative;
-    z-index: 5;
+    border-bottom: none;
     width: 100%;
-    padding: 2vh 2vw;
-    text-align: center;
 }
 
 .header-content {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 55px;
     position: relative;
 }
 
 .logo {
+    position: relative;
+    margin-left: -630px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+.logo img {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+}
+
+.logo-text {
+    display: block;
+    color: #FFFFFF;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+}
+
+.nav {
+    transform: translateX(650px);
+    display: flex;
+    align-items: center;
+}
+
+.nav ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav li {
+    margin-left: 15px;
+}
+
+.nav li:first-child {
+    margin-left: 0;
+}
+
+.nav a {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 10px;
+    color: #FFFFFF;
+    fill: #FFFFFF;
+    cursor: pointer;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.nav a:hover,
+.nav a:focus {
+    color: #4effd0;
+    fill: #4effd0;
+    text-decoration: none;
+}
+
+.nav a.active {
+    position: relative;
+    color: #4effd0;
+    fill: #4effd0;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.nav a.active::after {
+    content: '';
     position: absolute;
-    top: 3%;
-    right: 5%;
-    width: clamp(50px, 8vw, 150px);
-    height: clamp(50px, 8vw, 150px);
-    object-fit: contain;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: calc(100% - 20px);
+    height: 2px;
+    background: #4effd0;
 }
 
 .main-title {
@@ -781,17 +888,13 @@ a:visited {
     width: 100%;
     min-height: 20vh;
     padding: 2rem;
-    background-image: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0) 0%,
-        rgba(0, 0, 0, 0) 59%,
-        rgba(0, 0, 0, 0.95) 100%
-    ), url('../assets/texturebg.svg');
+    background-color: #44546a;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
     position: relative;
     z-index: 5;
+    border-top: 1px solid rgba(78, 255, 208, 0.2);
 }
 
 .footer-content {
@@ -803,13 +906,15 @@ a:visited {
 }
 
 .data-sources {
-    color: #CCC;
+    color: #FFFFFF;
     font-size: 0.9rem;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .data-sources h4 {
-    color: #E87722;
+    color: #4effd0;
     margin-bottom: 1rem;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .data-sources ul {
@@ -824,7 +929,8 @@ a:visited {
 .credits {
     text-align: right;
     font-size: 0.8rem;
-    color: #999;
+    color: #FFFFFF;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .credits p {
