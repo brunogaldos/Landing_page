@@ -63,12 +63,14 @@ h3 {
 h4 {
     font-size: clamp(1rem, 2.5vw, 1.25rem);
     font-weight: 600;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 p {
     font-size: clamp(1rem, 2vw, 1.25rem);
     line-height: 1.5;
     margin: 0 0 1rem 0;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 a {
@@ -257,8 +259,16 @@ a:visited {
 .header-panel .panel-content {
     background: rgba(68, 84, 106, 0.95);
     text-align: center;
-    max-width: 600px;
+    max-width: 700px;
+    min-height: 160px;
+    height: auto;
+    padding: 1.5rem 2rem;
     border: 1px solid rgba(78, 255, 208, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: -120px;
 }
 
 .narrative-panel .panel-content {
@@ -285,7 +295,8 @@ a:visited {
 /* Panel Content Elements */
 .panel-content h1 {
     font-size: clamp(1.5rem, 3.5vw, 2.5rem);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    margin-top: -15px;
     color: #4effd0;
     font-weight: 700;
     line-height: 1.2;
@@ -312,6 +323,7 @@ a:visited {
     font-size: clamp(1rem, 2vw, 1.2rem);
     line-height: 1.6;
     margin-bottom: 1.5rem;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .panel-content .hedp {
@@ -320,29 +332,51 @@ a:visited {
     font-weight: 500;
     letter-spacing: 0.05em;
     text-align: center;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+    max-width: 90%;
+    margin: 0 auto;
 }
 
 /* Logo centering */
 .panel-content .logo {
     display: block;
-    margin: 0 auto 1.5rem auto;
+    margin: 0 auto 0.5rem auto;
+    width: 80px;
+    height: 80px;
+}
+
+/* Responsive logo sizing */
+@media (max-width: 768px) {
+    .panel-content .logo {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .panel-content .logo {
+        width: 70px;
+        height: 70px;
+    }
 }
 
 .panel-content ul {
     list-style-type: none;
     padding: 0;
     margin: 1.5rem 0;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .panel-content li {
     padding: 0.5rem 0;
     padding-left: 1.5rem;
     position: relative;
+    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .panel-content li::before {
     content: '•';
-    color: #E87722;
+    color: #4effd0;
     font-weight: bold;
     position: absolute;
     left: 0;
@@ -973,6 +1007,13 @@ a:visited {
     }
     
     .header-panel .panel-content {
+        max-width: 90%;
+        min-height: 120px;
+        padding: 1rem 1.5rem;
+        margin-top: -120px;
+    }
+    
+    .panel-content .hedp {
         max-width: 95%;
     }
 }
@@ -984,7 +1025,14 @@ a:visited {
     }
     
     .header-panel .panel-content {
-        max-width: 500px;
+        max-width: 650px;
+        min-height: 140px;
+        padding: 1.5rem 2rem;
+        margin-top: -120px;
+    }
+    
+    .panel-content .hedp {
+        max-width: 85%;
     }
 }
 
@@ -995,7 +1043,14 @@ a:visited {
     }
     
     .header-panel .panel-content {
-        max-width: 600px;
+        max-width: 700px;
+        min-height: 160px;
+        padding: 1.5rem 2rem;
+        margin-top: -120px;
+    }
+    
+    .panel-content .hedp {
+        max-width: 80%;
     }
 }
 

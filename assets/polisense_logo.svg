@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Background removed for transparency -->
+  <!-- Thick ring: outer black circle with inner white circle to create a hollow center -->
+  <!-- Hollow ring using mask for true transparency -->
+  <mask id="ring-mask">
+    <rect width="1024" height="1024" fill="white"/>
+    <circle cx="512" cy="320" r="200" fill="black"/>
+  </mask>
+  <circle cx="512" cy="320" r="320" fill="#58e4fc" mask="url(#ring-mask)"/>
+  <!-- Base: flat top rectangle plus an ellipse for rounded bottom to match the reference style -->
+  <rect x="332" y="660" width="360" height="60" fill="#58e4fc"/>
+  <ellipse cx="512" cy="720" rx="180" ry="60" fill="#58e4fc"/>
+</svg>
