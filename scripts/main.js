@@ -19,7 +19,7 @@ class ArequipaScrollMap {
         this.initialZoom = 3;
         this.targetZoom = 9;
         
-        // Map states for each panel
+        // Map states for each panel with proper 3D views
         this.mapStates = {
             'intro': {
                 center: [0, 0],
@@ -45,29 +45,29 @@ class ArequipaScrollMap {
             'cultural': {
                 center: [-71.5375, -16.4090],
                 zoom: 9,
-                pitch: 20,
-                bearing: 15,
+                pitch: 60,
+                bearing: -30,
                 style: 'mapbox://styles/mapbox/satellite-streets-v12'
             },
             'visual': {
                 center: [-71.5375, -16.4090],
                 zoom: 10,
-                pitch: 25,
-                bearing: 20,
+                pitch: 70,
+                bearing: -45,
                 style: 'mapbox://styles/mapbox/satellite-streets-v12'
             },
             'data': {
                 center: [-71.5375, -16.4090],
                 zoom: 11,
-                pitch: 30,
-                bearing: 25,
+                pitch: 80,
+                bearing: -60,
                 style: 'mapbox://styles/mapbox/satellite-streets-v12'
             },
             'conclusion': {
                 center: [-71.5375, -16.4090],
                 zoom: 12,
-                pitch: 35,
-                bearing: 30,
+                pitch: 85,
+                bearing: -75,
                 style: 'mapbox://styles/mapbox/satellite-streets-v12'
             }
         };
@@ -239,19 +239,17 @@ class ArequipaScrollMap {
             return;
         }
 
-        // Smooth transition to new map state
+        // Use easeTo for smooth 3D transitions
         this.map.easeTo({
             center: mapState.center,
             zoom: mapState.zoom,
             pitch: mapState.pitch,
             bearing: mapState.bearing,
-            duration: this.reducedMotion ? 0 : 1500
+            duration: this.reducedMotion ? 0 : 2000
         });
 
-        // Update map style if different
-        if (this.map.getStyle().name !== mapState.style) {
-            this.map.setStyle(mapState.style);
-        }
+        // Add atmospheric effects and turquoise glow
+        this.addAtmosphericEffects(mapState);
     }
 
     /**
@@ -524,6 +522,120 @@ class ArequipaScrollMap {
      */
     easeInOutCubic(t) {
         return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+
+    /**
+     * Add atmospheric effects and turquoise glow
+     */
+    addAtmosphericEffects(mapState) {
+        if (!this.map) return;
+
+        // Add fog effect for depth
+        this.map.setFog({
+            color: 'rgb(186, 210, 235)',
+            'high-color': 'rgb(36, 92, 223)',
+            'horizon-blend': 0.02,
+            'space-color': 'rgb(11, 11, 25)',
+            'star-intensity': 0.6,
+            range: [0, 4],
+            'space-opacity': 0.3
+        });
+
+        // Add sky layer for atmospheric effects
+        this.map.setSky({
+            'sky-type': 'atmosphere',
+            'sky-atmosphere-sun': [0.0, 0.0],
+            'sky-atmosphere-sun-intensity': 15,
+            'sky-atmosphere-color': 'rgb(220, 159, 159)',
+            'sky-atmosphere-halo-color': 'rgb(255, 255, 255)',
+            'sky-atmosphere-space-color': 'rgb(0, 0, 0)',
+            'sky-atmosphere-stars-intensity': 0.5,
+            'sky-atmosphere-opacity': 0.2
+        });
+
+        // Add turquoise glow effect around Arequipa
+        this.addTurquoiseGlow();
+    }
+
+    /**
+     * Add turquoise glow effect around Arequipa
+     */
+    addTurquoiseGlow() {
+        if (!this.map) return;
+
+        // Remove existing glow layer if it exists
+        if (this.map.getLayer('turquoise-glow')) {
+            this.map.removeLayer('turquoise-glow');
+        }
+        if (this.map.getSource('turquoise-glow')) {
+            this.map.removeSource('turquoise-glow');
+        }
+
+        // Add turquoise glow source
+        this.map.addSource('turquoise-glow', {
+            type: 'geojson',
+            data: {
+                type: 'FeatureCollection',
+                features: [{
+                    type: 'Feature',
+                    properties: {},
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [-71.5375, -16.4090]
+                    }
+                }]
+            }
+        });
+
+        // Add turquoise glow layer
+        this.map.addLayer({
+            id: 'turquoise-glow',
+            type: 'circle',
+            source: 'turquoise-glow',
+            paint: {
+                'circle-radius': {
+                    stops: [
+                        [6, 20],
+                        [12, 100]
+                    ]
+                },
+                'circle-color': '#4effd0',
+                'circle-opacity': 0.3,
+                'circle-blur': 1
+            }
+        });
+
+        // Add pulsing animation
+        this.animateTurquoiseGlow();
+    }
+
+    /**
+     * Animate turquoise glow effect
+     */
+    animateTurquoiseGlow() {
+        if (!this.map || this.reducedMotion) return;
+
+        let opacity = 0.3;
+        let increasing = true;
+
+        const animate = () => {
+            if (increasing) {
+                opacity += 0.01;
+                if (opacity >= 0.6) increasing = false;
+            } else {
+                opacity -= 0.01;
+                if (opacity <= 0.2) increasing = true;
+            }
+
+            if (this.map.getLayer('turquoise-glow')) {
+                this.map.setPaintProperty('turquoise-glow', 'circle-opacity', opacity);
+            }
+
+            requestAnimationFrame(animate);
+        };
+
+        animate();
     }
 
     /**

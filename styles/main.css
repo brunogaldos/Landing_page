@@ -200,6 +200,58 @@ a:visited {
     width: 100vw;
     height: 100vh;
     z-index: 1;
+    transition: all 0.3s ease;
+}
+
+/* Enhanced Map Visual Effects */
+.pinned-map::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+        rgba(78, 255, 208, 0.05) 0%, 
+        rgba(255, 107, 107, 0.05) 50%, 
+        rgba(78, 255, 208, 0.05) 100%);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    animation: mapGlow 4s ease-in-out infinite alternate;
+}
+
+.pinned-map::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, 
+        rgba(78, 255, 208, 0.1) 0%, 
+        transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+.pinned-map:hover::before,
+.pinned-map:hover::after {
+    opacity: 1;
+}
+
+@keyframes mapGlow {
+    0% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.6;
+        transform: scale(1.02);
+    }
 }
 
 /* Unpinned map state */
@@ -1466,32 +1518,39 @@ a:visited {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(78, 255, 208, 0.3);
 }
 
 .map-control-btn {
     width: 40px;
     height: 40px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    background: rgba(78, 255, 208, 0.1);
+    border: 1px solid rgba(78, 255, 208, 0.5);
+    border-radius: 6px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 18px;
     font-weight: bold;
-    color: #333;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #4effd0;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 8px rgba(78, 255, 208, 0.2);
 }
 
 .map-control-btn:hover,
 .map-control-btn:focus {
-    background: #fff;
-    border-color: #E87722;
-    outline: 2px solid #E87722;
+    background: rgba(78, 255, 208, 0.2);
+    border-color: #4effd0;
+    outline: 2px solid #4effd0;
     outline-offset: 2px;
     transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(78, 255, 208, 0.4);
 }
 
 .map-control-btn:active {
