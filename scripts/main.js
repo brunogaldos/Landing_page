@@ -52,17 +52,17 @@ class ArequipaScrollMap {
             },
             'data': {
                 center: [-71.537, -16.399],  // Arequipa coordinates as requested
-                zoom: 17,  // Close zoom to see buildings clearly
+                zoom: 18,  // Closer zoom to see buildings in more detail
                 pitch: 60,  // Good angle to see building sides
                 bearing: 0,  // Straight view for better visibility
-                style: 'mapbox://styles/mapbox/light-v11'  // Light style for better 3D visibility
+                style: 'mapbox://styles/mapbox/standard'  // Standard style with built-in 3D buildings
             },
             'conclusion': {
                 center: [-71.537, -16.399],  // Same as data panel - maintain view
                 zoom: 17,  // Same as data panel - maintain view
                 pitch: 60,  // Same as data panel - maintain view
                 bearing: 0,  // Same as data panel - maintain view
-                style: 'mapbox://styles/mapbox/light-v11'  // Same as data panel - maintain view
+                style: 'mapbox://styles/mapbox/standard'  // Same as data panel - maintain view
             }
         };
         
@@ -266,75 +266,88 @@ class ArequipaScrollMap {
             this.applyLightingForState(stateKey);
         }, 100);
 
-        // Add 3D buildings for data and conclusion panels
+        // Configure 3D buildings for data and conclusion panels using Standard style
         if (stateKey === 'data' || stateKey === 'conclusion') {
-            this.add3DBuildingsForDataPanel();
+            this.configure3DBuildingsForStandardStyle();
         }
     }
 
     /**
-     * Add 3D buildings specifically for the data panel
+     * Configure 3D buildings using Mapbox Standard Style
      */
-    add3DBuildingsForDataPanel() {
-        console.log('🏗️ Adding 3D buildings for data panel...');
+    configure3DBuildingsForStandardStyle() {
+        console.log('🏗️ Configuring 3D buildings with Standard style...');
         
         // Wait for the map transition and style change to complete
         setTimeout(() => {
             this.waitForMapReady().then(() => {
                 try {
-                    // Remove existing elements if they exist
-                    if (this.map.getLayer('test-circle')) {
-                        this.map.removeLayer('test-circle');
-                    }
-                    if (this.map.getSource('test-point')) {
-                        this.map.removeSource('test-point');
-                    }
-                    if (this.map.getLayer('3d-buildings')) {
-                        this.map.removeLayer('3d-buildings');
-                    }
-                    // Remove turquoise glow if it exists
-                    if (this.map.getLayer('turquoise-glow')) {
-                        this.map.removeLayer('turquoise-glow');
-                    }
-                    if (this.map.getSource('turquoise-glow')) {
-                        this.map.removeSource('turquoise-glow');
-                    }
-                    // Note: We don't remove 'composite' source as it's built-in to Mapbox
-
-                    // Add real 3D buildings from Mapbox composite source
-                    this.map.addLayer({
-                        'id': '3d-buildings',
-                        'source': 'composite',
-                        'source-layer': 'building',
-                        'filter': ['==', 'extrude', 'true'],
-                        'type': 'fill-extrusion',
-                        'minzoom': 10,
-                        'paint': {
-                            // Use default building colors that match terrain
-                            'fill-extrusion-color': '#aaa',
-                            'fill-extrusion-height': [
-                                'case',
-                                ['has', 'height'],
-                                ['get', 'height'],
-                                ['*', ['get', 'levels'], 3] // If no height, estimate from levels
-                            ],
-                            'fill-extrusion-base': [
-                                'case',
-                                ['has', 'min_height'],
-                                ['get', 'min_height'],
-                                0
-                            ],
-                            'fill-extrusion-opacity': 0.6
-                        }
-                    });
-
-                    console.log('✅ Buildings and test circle added for data panel');
+                    // Enable 3D buildings with natural colors using Standard style configuration
+                    this.map.setConfigProperty('basemap', 'show3dObjects', true);
+                    
+                    // Set lighting preset for natural appearance
+                    this.map.setConfigProperty('basemap', 'lightPreset', 'day');
+                    
+                    console.log('✅ Standard style 3D buildings configured with natural colors and day lighting');
                     
                 } catch (error) {
-                    console.error('❌ Failed to add buildings for data panel:', error);
+                    console.error('❌ Failed to configure Standard style 3D buildings:', error);
+                    console.log('🔄 Falling back to custom 3D buildings...');
+                    
+                    // Fallback to the original custom 3D buildings method
+                    this.addCustom3DBuildings();
                 }
             });
-        }, 3000); // Wait longer for transition to complete
+        }, 2000); // Reduced wait time since Standard style loads faster
+    }
+
+    /**
+     * Fallback method for custom 3D buildings (if Standard style fails)
+     */
+    addCustom3DBuildings() {
+        try {
+            // Remove existing custom layers if they exist
+            if (this.map.getLayer('3d-buildings-custom')) {
+                this.map.removeLayer('3d-buildings-custom');
+            }
+
+            // Add custom 3D buildings with natural colors
+            this.map.addLayer({
+                'id': '3d-buildings-custom',
+                'source': 'composite',
+                'source-layer': 'building',
+                'filter': ['==', 'extrude', 'true'],
+                'type': 'fill-extrusion',
+                'minzoom': 10,
+                'paint': {
+                    // More natural building colors
+                    'fill-extrusion-color': [
+                        'case',
+                        ['>', ['get', 'height'], 50], '#8B4513', // Taller buildings: brown
+                        ['>', ['get', 'height'], 20], '#D2B48C', // Medium buildings: tan
+                        '#F5F5DC' // Short buildings: beige
+                    ],
+                    'fill-extrusion-height': [
+                        'case',
+                        ['has', 'height'],
+                        ['get', 'height'],
+                        ['*', ['get', 'levels'], 3]
+                    ],
+                    'fill-extrusion-base': [
+                        'case',
+                        ['has', 'min_height'],
+                        ['get', 'min_height'],
+                        0
+                    ],
+                    'fill-extrusion-opacity': 0.8
+                }
+            });
+
+            console.log('✅ Custom 3D buildings added as fallback');
+            
+        } catch (error) {
+            console.error('❌ Failed to add custom 3D buildings fallback:', error);
+        }
     }
 
     /**
@@ -421,7 +434,7 @@ class ArequipaScrollMap {
         // Create map with initial world view
         this.map = new mapboxgl.Map({
             container: 'map',
-            style: 'mapbox://styles/mapbox/satellite-streets-v12',
+            style: this.mapStates.intro.style,
             center: this.mapStates.intro.center,
             zoom: this.mapStates.intro.zoom,
             pitch: this.mapStates.intro.pitch,
