@@ -9,6 +9,7 @@ class ArequipaScrollMap {
         this.mapContainer = null;
         this.isLoaded = false;
         this.isInitialized = false;
+        this.currentState = null;
         this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         this.contentPanels = [];
         this.currentPanelIndex = 0;
@@ -49,26 +50,19 @@ class ArequipaScrollMap {
                 bearing: -30,
                 style: 'mapbox://styles/mapbox/satellite-streets-v12'
             },
-            'visual': {
-                center: [-71.5375, -16.4090],
-                zoom: 10,
-                pitch: 70,
-                bearing: -45,
-                style: 'mapbox://styles/mapbox/satellite-streets-v12'
-            },
             'data': {
-                center: [-71.5375, -16.4090],
-                zoom: 11,
-                pitch: 80,
-                bearing: -60,
-                style: 'mapbox://styles/mapbox/satellite-streets-v12'
+                center: [-71.537, -16.399],  // Arequipa coordinates as requested
+                zoom: 17,  // Close zoom to see buildings clearly
+                pitch: 60,  // Good angle to see building sides
+                bearing: 0,  // Straight view for better visibility
+                style: 'mapbox://styles/mapbox/light-v11'  // Light style for better 3D visibility
             },
             'conclusion': {
-                center: [-71.5375, -16.4090],
-                zoom: 12,
-                pitch: 85,
-                bearing: -75,
-                style: 'mapbox://styles/mapbox/satellite-streets-v12'
+                center: [-71.537, -16.399],  // Same as data panel - maintain view
+                zoom: 17,  // Same as data panel - maintain view
+                pitch: 60,  // Same as data panel - maintain view
+                bearing: 0,  // Same as data panel - maintain view
+                style: 'mapbox://styles/mapbox/light-v11'  // Same as data panel - maintain view
             }
         };
         
@@ -218,6 +212,8 @@ class ArequipaScrollMap {
             
             // Get map state from panel data attribute
             const mapState = activePanel.dataset.mapState;
+            console.log('Active panel changed to:', mapState, 'Panel index:', panelIndex);
+            
             if (mapState) {
                 this.updateMapState(mapState);
             }
@@ -239,17 +235,124 @@ class ArequipaScrollMap {
             return;
         }
 
-        // Use easeTo for smooth 3D transitions
-        this.map.easeTo({
-            center: mapState.center,
-            zoom: mapState.zoom,
-            pitch: mapState.pitch,
-            bearing: mapState.bearing,
-            duration: this.reducedMotion ? 0 : 2000
-        });
+        // Change map style if different from current
+        if (this.map.getStyle().name !== mapState.style) {
+            this.map.setStyle(mapState.style);
+        }
 
-        // Add atmospheric effects and turquoise glow
-        this.addAtmosphericEffects(mapState);
+        // Skip animation if transitioning from 'data' to 'conclusion' (maintain same view)
+        if (this.currentState === 'data' && stateKey === 'conclusion') {
+            console.log('Maintaining same view from data to conclusion - no animation');
+            // Don't animate, just maintain the current view
+        } else {
+            // Use easeTo for smooth 3D transitions
+            this.map.easeTo({
+                center: mapState.center,
+                zoom: mapState.zoom,
+                pitch: mapState.pitch,
+                bearing: mapState.bearing,
+                duration: this.reducedMotion ? 0 : 2000
+            });
+        }
+        
+        // Update current state
+        this.currentState = stateKey;
+
+        // Skip atmospheric effects and turquoise glow (disabled per user request)
+        // this.addAtmosphericEffects(mapState);
+
+        // Apply lighting after map transition (with delay to ensure it's visible)
+        setTimeout(() => {
+            this.applyLightingForState(stateKey);
+        }, 100);
+
+        // Add 3D buildings for data and conclusion panels
+        if (stateKey === 'data' || stateKey === 'conclusion') {
+            this.add3DBuildingsForDataPanel();
+        }
+    }
+
+    /**
+     * Add 3D buildings specifically for the data panel
+     */
+    add3DBuildingsForDataPanel() {
+        console.log('🏗️ Adding 3D buildings for data panel...');
+        
+        // Wait for the map transition and style change to complete
+        setTimeout(() => {
+            this.waitForMapReady().then(() => {
+                try {
+                    // Remove existing elements if they exist
+                    if (this.map.getLayer('test-circle')) {
+                        this.map.removeLayer('test-circle');
+                    }
+                    if (this.map.getSource('test-point')) {
+                        this.map.removeSource('test-point');
+                    }
+                    if (this.map.getLayer('3d-buildings')) {
+                        this.map.removeLayer('3d-buildings');
+                    }
+                    // Remove turquoise glow if it exists
+                    if (this.map.getLayer('turquoise-glow')) {
+                        this.map.removeLayer('turquoise-glow');
+                    }
+                    if (this.map.getSource('turquoise-glow')) {
+                        this.map.removeSource('turquoise-glow');
+                    }
+                    // Note: We don't remove 'composite' source as it's built-in to Mapbox
+
+                    // Add real 3D buildings from Mapbox composite source
+                    this.map.addLayer({
+                        'id': '3d-buildings',
+                        'source': 'composite',
+                        'source-layer': 'building',
+                        'filter': ['==', 'extrude', 'true'],
+                        'type': 'fill-extrusion',
+                        'minzoom': 10,
+                        'paint': {
+                            // Use default building colors that match terrain
+                            'fill-extrusion-color': '#aaa',
+                            'fill-extrusion-height': [
+                                'case',
+                                ['has', 'height'],
+                                ['get', 'height'],
+                                ['*', ['get', 'levels'], 3] // If no height, estimate from levels
+                            ],
+                            'fill-extrusion-base': [
+                                'case',
+                                ['has', 'min_height'],
+                                ['get', 'min_height'],
+                                0
+                            ],
+                            'fill-extrusion-opacity': 0.6
+                        }
+                    });
+
+                    console.log('✅ Buildings and test circle added for data panel');
+                    
+                } catch (error) {
+                    console.error('❌ Failed to add buildings for data panel:', error);
+                }
+            });
+        }, 3000); // Wait longer for transition to complete
+    }
+
+    /**
+     * Wait for map to be ready
+     */
+    waitForMapReady() {
+        return new Promise((resolve) => {
+            const checkReady = () => {
+                if (this.map && this.map.loaded() && this.map.isStyleLoaded()) {
+                    console.log('✅ Map ready for building addition');
+                    resolve();
+                } else {
+                    console.log('⏳ Waiting for map to be ready...');
+                    setTimeout(checkReady, 200);
+                }
+            };
+            checkReady();
+        });
     }
 
     /**
@@ -331,6 +434,8 @@ class ArequipaScrollMap {
         await new Promise((resolve) => {
             this.map.on('load', resolve);
         });
+
+        console.log('✅ Map initialization complete - buildings will be added when data panel is active');
 
         this.isLoaded = true;
         this.mapContainer.setAttribute('aria-label', 'Interactive map showing Arequipa, Peru');
@@ -531,28 +636,8 @@ class ArequipaScrollMap {
     addAtmosphericEffects(mapState) {
         if (!this.map) return;
 
-        // Add fog effect for depth
-        this.map.setFog({
-            color: 'rgb(186, 210, 235)',
-            'high-color': 'rgb(36, 92, 223)',
-            'horizon-blend': 0.02,
-            'space-color': 'rgb(11, 11, 25)',
-            'star-intensity': 0.6,
-            range: [0, 4],
-            'space-opacity': 0.3
-        });
-
-        // Add sky layer for atmospheric effects
-        this.map.setSky({
-            'sky-type': 'atmosphere',
-            'sky-atmosphere-sun': [0.0, 0.0],
-            'sky-atmosphere-sun-intensity': 15,
-            'sky-atmosphere-color': 'rgb(220, 159, 159)',
-            'sky-atmosphere-halo-color': 'rgb(255, 255, 255)',
-            'sky-atmosphere-space-color': 'rgb(0, 0, 0)',
-            'sky-atmosphere-stars-intensity': 0.5,
-            'sky-atmosphere-opacity': 0.2
-        });
+        // Skip fog and sky effects for compatibility
+        console.log('⚠ Skipping fog/sky effects for version compatibility');
 
         // Add turquoise glow effect around Arequipa
         this.addTurquoiseGlow();
@@ -636,6 +721,209 @@ class ArequipaScrollMap {
         };
 
         animate();
+    }
+
+    /**
+     * Apply lighting based on state
+     */
+    applyLightingForState(stateKey) {
+        console.log('Applying lighting for state:', stateKey);
+        
+        // Test lighting support first
+        this.testLightingSupport();
+        
+        // Apply day lighting for all states (night lighting removed per user request)
+        this.applyDayLighting();
+    }
+
+    /**
+     * Test if lighting is supported and working
+     */
+    testLightingSupport() {
+        if (!this.map) {
+            console.log('❌ Map not initialized');
+            return false;
+        }
+
+        console.log('🔍 Testing Mapbox lighting support...');
+        
+        // Check if methods exist
+        console.log('✓ setLight method exists:', typeof this.map.setLight === 'function');
+        console.log('✓ getLight method exists:', typeof this.map.getLight === 'function');
+        
+        // Check map state
+        console.log('✓ Map loaded:', this.map.loaded());
+        console.log('✓ Style loaded:', this.map.isStyleLoaded());
+        console.log('✓ Mapbox GL version:', mapboxgl.version);
+        
+        // Check current style
+        try {
+            const style = this.map.getStyle();
+            console.log('✓ Current style:', style.name || 'Unknown');
+            console.log('✓ Style source:', style.sources ? Object.keys(style.sources).length + ' sources' : 'No sources');
+        } catch (e) {
+            console.log('❌ Could not get style info:', e.message);
+        }
+
+        // Test current light
+        try {
+            const currentLight = this.map.getLight();
+            console.log('✓ Current light:', currentLight || 'Default/None');
+        } catch (e) {
+            console.log('❌ Could not get current light:', e.message);
+        }
+
+        // Test setting a simple light
+        try {
+            const testLight = {
+                anchor: 'viewport',
+                color: '#ffffff',
+                intensity: 0.5,
+                position: [1.15, 180, 30]
+            };
+            
+            this.map.setLight(testLight);
+            console.log('✅ Test light applied successfully');
+            
+            // Verify it was set
+            setTimeout(() => {
+                try {
+                    const verifyLight = this.map.getLight();
+                    console.log('✅ Verified light:', verifyLight);
+                } catch (e) {
+                    console.log('❌ Could not verify light:', e.message);
+                }
+            }, 100);
+            
+            return true;
+        } catch (e) {
+            console.log('❌ Test light failed:', e.message);
+            console.log('❌ Error stack:', e.stack);
+            return false;
+        }
+    }
+
+    /**
+     * Apply night lighting effect for Visual Journey panel
+     */
+    applyNightLighting() {
+        if (!this.map) return;
+
+        console.log('Applying night lighting...');
+        
+        try {
+            // Try to apply lighting - some styles don't support it
+            const nightLight = {
+                anchor: 'viewport',
+                color: '#000033',  // Very dark blue for dramatic contrast
+                intensity: 2.0,    // Much higher intensity for visibility
+                position: [1.15, 5, 10]  // Very low angle for dramatic shadows
+            };
+
+            this.map.setLight(nightLight);
+            console.log('Night lighting applied:', nightLight);
+        } catch (error) {
+            console.log('Lighting not supported by current style, using alternative approach');
+            // Fallback: apply dark overlay effect
+            this.applyDarkOverlay();
+        }
+        
+        // Skip fog and sky effects - not supported in this version
+        console.log('✓ Night lighting applied (fog/sky skipped for compatibility)');
+    }
+
+    /**
+     * Apply dark overlay as fallback when lighting is not supported
+     */
+    applyDarkOverlay() {
+        if (!this.map) return;
+
+        // Remove existing overlay if it exists
+        if (this.map.getLayer('night-overlay')) {
+            this.map.removeLayer('night-overlay');
+        }
+        if (this.map.getSource('night-overlay')) {
+            this.map.removeSource('night-overlay');
+        }
+
+        // Add dark overlay source
+        this.map.addSource('night-overlay', {
+            type: 'geojson',
+            data: {
+                type: 'FeatureCollection',
+                features: [{
+                    type: 'Feature',
+                    properties: {},
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [[
+                            [-180, -90],
+                            [180, -90],
+                            [180, 90],
+                            [-180, 90],
+                            [-180, -90]
+                        ]]
+                    }
+                }]
+            }
+        });
+
+        // Add dark overlay layer
+        this.map.addLayer({
+            id: 'night-overlay',
+            type: 'fill',
+            source: 'night-overlay',
+            paint: {
+                'fill-color': '#0a0a1a',
+                'fill-opacity': 0.4
+            }
+        });
+
+        console.log('Dark overlay applied as fallback');
+    }
+
+    /**
+     * Apply day lighting effect for other panels
+     */
+    applyDayLighting() {
+        if (!this.map) return;
+
+        console.log('Applying day lighting...');
+        
+        try {
+            const dayLight = {
+                anchor: 'viewport',
+                color: '#ffffff',
+                intensity: 1.0,  // Higher intensity for more visible effect
+                position: [1.15, 210, 30]
+            };
+
+            this.map.setLight(dayLight);
+            console.log('Day lighting applied:', dayLight);
+        } catch (error) {
+            console.log('Lighting not supported, removing overlay');
+            // Remove dark overlay if it exists
+            this.removeDarkOverlay();
+        }
+        
+        // Skip fog and sky effects - not supported in this version
+        console.log('✓ Day lighting applied (fog/sky skipped for compatibility)');
+    }
+
+    /**
+     * Remove dark overlay
+     */
+    removeDarkOverlay() {
+        if (!this.map) return;
+
+        if (this.map.getLayer('night-overlay')) {
+            this.map.removeLayer('night-overlay');
+        }
+        if (this.map.getSource('night-overlay')) {
+            this.map.removeSource('night-overlay');
+        }
+
+        console.log('Dark overlay removed');
     }
 
     /**

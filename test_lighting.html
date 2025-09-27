@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Mapbox Lighting Test</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        .controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            max-width: 300px;
+        }
+        button {
+            margin: 5px;
+            padding: 8px 12px;
+            background: #007cbf;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #005a8b;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="controls">
+        <h3>Mapbox Lighting Test</h3>
+        <button onclick="testDayLighting()">Test Day Lighting</button>
+        <button onclick="testNightLighting()">Test Night Lighting</button>
+        <button onclick="testRedLighting()">Test RED Lighting</button>
+        <button onclick="testBlueLighting()">Test BLUE Lighting</button>
+        <button onclick="testExtremeAngle()">Test Extreme Angle</button>
+        <button onclick="testLightingSupport()">Check Lighting Support</button>
+        <button onclick="testCurrentLight()">Get Current Light</button>
+        <button onclick="clearResults()">Clear Results</button>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // Replace with your actual Mapbox token
+        mapboxgl.accessToken = 'pk.eyJ1IjoibWF0dGVhOTkiLCJhIjoiY2xkY2V0eHF2MDhhYjNub2Jya2h0dHh5diJ9.fXChvC5vSrDhDaNNLLbb0w';
+
+        let map;
+        let resultsDiv = document.getElementById('results');
+
+        // Initialize map
+        function initMap() {
+            try {
+                map = new mapboxgl.Map({
+                    container: 'map',
+                    style: 'mapbox://styles/mapbox/light-v11', // Changed to light style for 3D compatibility
+                    center: [-74.006, 40.7128], // NYC for better 3D buildings
+                    zoom: 16,
+                    pitch: 60,
+                    bearing: -30,
+                    antialias: true
+                });
+
+                map.on('load', () => {
+                    addResult('Map loaded successfully', 'success');
+                    
+                    // Add 3D buildings - ESSENTIAL for lighting visibility!
+                    try {
+                        map.addLayer({
+                            'id': '3d-buildings',
+                            'source': 'composite',
+                            'source-layer': 'building',
+                            'filter': ['==', 'extrude', 'true'],
+                            'type': 'fill-extrusion',
+                            'minzoom': 15,
+                            'paint': {
+                                'fill-extrusion-color': '#aaa',
+                                'fill-extrusion-height': [
+                                    'interpolate', ['linear'], ['zoom'],
+                                    15, 0,
+                                    16, ['get', 'height']
+                                ],
+                                'fill-extrusion-base': [
+                                    'interpolate', ['linear'], ['zoom'],
+                                    15, 0,
+                                    16, ['get', 'min_height']
+                                ],
+                                'fill-extrusion-opacity': 0.8
+                            }
+                        });
+                        addResult('✅ 3D Buildings added - lighting should now be visible!', 'success');
+                    } catch (buildingError) {
+                        addResult(`❌ Failed to add 3D buildings: ${buildingError.message}`, 'error');
+                    }
+                    
+                    // Try to add terrain for better lighting visibility
+                    try {
+                        if (typeof map.addSource === 'function') {
+                            map.addSource('mapbox-dem', {
+                                'type': 'raster-dem',
+                                'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+                                'tileSize': 512,
+                                'maxzoom': 14
+                            });
+                            
+                            if (typeof map.setTerrain === 'function') {
+                                map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+                                addResult('✓ Terrain enabled for better lighting visibility', 'success');
+                            } else {
+                                addResult('⚠ setTerrain not available in this version', 'info');
+                            }
+                        }
+                    } catch (terrainError) {
+                        addResult(`⚠ Terrain setup failed: ${terrainError.message}`, 'info');
+                    }
+                    
+                    testLightingSupport();
+                });
+
+                map.on('error', (e) => {
+                    addResult(`Map error: ${e.error.message}`, 'error');
+                });
+
+            } catch (error) {
+                addResult(`Failed to initialize map: ${error.message}`, 'error');
+            }
+        }
+
+        function testDayLighting() {
+            if (!map) {
+                addResult('Map not initialized', 'error');
+                return;
+            }
+
+            try {
+                const dayLight = {
+                    anchor: 'viewport',
+                    color: '#ffffff',
+                    intensity: 1.0,  // Higher intensity for more visible effect
+                    position: [1.15, 210, 30]
+                };
+
+                map.setLight(dayLight);
+                addResult('Day lighting applied successfully', 'success');
+                addResult(`Light config: ${JSON.stringify(dayLight, null, 2)}`, 'info');
+                
+                // Try to set fog for day effect if available
+                try {
+                    if (typeof map.setFog === 'function') {
+                        map.setFog({
+                            color: 'rgb(220, 220, 255)',
+                            'high-color': 'rgb(100, 150, 255)',
+                            'horizon-blend': 0.1,
+                            'space-color': 'rgb(200, 200, 255)',
+                            'star-intensity': 0.2,
+                            range: [0, 4],
+                            'space-opacity': 0.1
+                        });
+                        addResult('✓ Day fog effects applied', 'success');
+                    } else {
+                        addResult('⚠ setFog not available in this version', 'info');
+                    }
+                } catch (fogError) {
+                    addResult(`⚠ Day fog effects not supported: ${fogError.message}`, 'info');
+                }
+                
+                // Test if we can get the light back
+                setTimeout(() => {
+                    try {
+                        const currentLight = map.getLight();
+                        addResult(`Current light after day setting: ${JSON.stringify(currentLight, null, 2)}`, 'info');
+                    } catch (e) {
+                        addResult(`Could not get current light: ${e.message}`, 'error');
+                    }
+                }, 100);
+
+            } catch (error) {
+                addResult(`Day lighting failed: ${error.message}`, 'error');
+                addResult(`Error stack: ${error.stack}`, 'error');
+            }
+        }
+
+        function testNightLighting() {
+            if (!map) {
+                addResult('Map not initialized', 'error');
+                return;
+            }
+
+            try {
+                const nightLight = {
+                    anchor: 'viewport',
+                    color: '#000033',  // Very dark blue for dramatic contrast
+                    intensity: 2.0,    // Much higher intensity
+                    position: [1.15, 5, 10]  // Very low angle for dramatic shadows
+                };
+
+                map.setLight(nightLight);
+                addResult('Night lighting applied successfully', 'success');
+                addResult(`Light config: ${JSON.stringify(nightLight, null, 2)}`, 'info');
+
+                // Try to add fog for night effect if available
+                try {
+                    if (typeof map.setFog === 'function') {
+                        map.setFog({
+                            color: 'rgb(10, 10, 40)',
+                            'high-color': 'rgb(5, 5, 20)',
+                            'horizon-blend': 0.3,
+                            'space-color': 'rgb(0, 0, 10)',
+                            'star-intensity': 1.0,
+                            range: [0, 2],
+                            'space-opacity': 0.9
+                        });
+                        addResult('✓ Fog effects applied', 'success');
+                    } else {
+                        addResult('⚠ setFog not available in this version', 'info');
+                    }
+                } catch (fogError) {
+                    addResult(`⚠ Fog effects not supported: ${fogError.message}`, 'info');
+                }
+
+                // Try to set sky if available (newer versions only)
+                try {
+                    if (typeof map.setSky === 'function') {
+                        map.setSky({
+                            'sky-type': 'atmosphere',
+                            'sky-atmosphere-sun': [0.0, 0.0],
+                            'sky-atmosphere-sun-intensity': 0,
+                            'sky-atmosphere-color': 'rgb(10, 10, 50)',
+                            'sky-atmosphere-halo-color': 'rgb(30, 30, 80)',
+                            'sky-atmosphere-space-color': 'rgb(0, 0, 5)',
+                            'sky-atmosphere-stars-intensity': 1.0,
+                            'sky-atmosphere-opacity': 1.0
+                        });
+                        addResult('✓ Sky effects applied', 'success');
+                    } else {
+                        addResult('⚠ setSky not available in this version', 'info');
+                    }
+                } catch (skyError) {
+                    addResult(`⚠ Sky effects not supported: ${skyError.message}`, 'info');
+                }
+
+                // Test if we can get the light back
+                setTimeout(() => {
+                    try {
+                        const currentLight = map.getLight();
+                        addResult(`Current light after night setting: ${JSON.stringify(currentLight, null, 2)}`, 'info');
+                    } catch (e) {
+                        addResult(`Could not get current light: ${e.message}`, 'error');
+                    }
+                }, 100);
+
+            } catch (error) {
+                addResult(`Night lighting failed: ${error.message}`, 'error');
+                addResult(`Error stack: ${error.stack}`, 'error');
+            }
+        }
+
+        function testLightingSupport() {
+            if (!map) {
+                addResult('Map not initialized', 'error');
+                return;
+            }
+
+            try {
+                // Check if setLight method exists
+                if (typeof map.setLight === 'function') {
+                    addResult('✓ map.setLight() method exists', 'success');
+                } else {
+                    addResult('✗ map.setLight() method not found', 'error');
+                }
+
+                // Check if getLight method exists
+                if (typeof map.getLight === 'function') {
+                    addResult('✓ map.getLight() method exists', 'success');
+                } else {
+                    addResult('✗ map.getLight() method not found', 'error');
+                }
+
+                // Check current style
+                const style = map.getStyle();
+                addResult(`Current style: ${style.name || 'Unknown'}`, 'info');
+                addResult(`Style metadata: ${JSON.stringify(style.metadata || {}, null, 2)}`, 'info');
+
+                // Check map version
+                addResult(`Mapbox GL JS version: ${mapboxgl.version}`, 'info');
+
+                // Check if map is loaded
+                addResult(`Map loaded: ${map.loaded()}`, 'info');
+                addResult(`Map style loaded: ${map.isStyleLoaded()}`, 'info');
+
+            } catch (error) {
+                addResult(`Support check failed: ${error.message}`, 'error');
+            }
+        }
+
+        function testCurrentLight() {
+            if (!map) {
+                addResult('Map not initialized', 'error');
+                return;
+            }
+
+            try {
+                const currentLight = map.getLight();
+                if (currentLight) {
+                    addResult('Current light settings:', 'success');
+                    addResult(`${JSON.stringify(currentLight, null, 2)}`, 'info');
+                } else {
+                    addResult('No light settings found (using default)', 'info');
+                }
+            } catch (error) {
+                addResult(`Failed to get current light: ${error.message}`, 'error');
+            }
+        }
+
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `status ${type}`;
+            div.innerHTML = message.includes('{') ? `<pre>${message}</pre>` : message;
+            resultsDiv.appendChild(div);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        function testRedLighting() {
+            if (!map) {
+                addResult('Map not initialized', 'error');
+                return;
+            }
+
+            try {
+                const redLight = {
+                    anchor: 'viewport',
+                    color: '#ff0000',  // Pure red
+                    intensity: 3.0,    // Very high intensity
+                    position: [1.15, 90, 45]  // Side lighting
+                };
+
+                map.setLight(redLight);
+                addResult('🔴 RED lighting applied successfully', 'success');
+                addResult(`Light config: ${JSON.stringify(redLight, null, 2)}`, 'info');
+                
+                setTimeout(() => {
+                    try {
+                        const currentLight = map.getLight();
+                        addResult(`Current light after RED setting: ${JSON.stringify(currentLight, null, 2)}`, 'info');
+                    } catch (e) {
+                        addResult(`Could not get current light: ${e.message}`, 'error');
+                    }
+                }, 100);
+
+            } catch (error) {
+                addResult(`RED lighting failed: ${error.message}`, 'error');
+            }
+        }
+
+        function testBlueLighting() {
+            if (!map) {
+                addResult('Map not initialized', 'error');
+                return;
+            }
+
+            try {
+                const blueLight = {
+                    anchor: 'viewport',
+                    color: '#0000ff',  // Pure blue
+                    intensity: 3.0,    // Very high intensity
+                    position: [1.15, 270, 45]  // Opposite side lighting
+                };
+
+                map.setLight(blueLight);
+                addResult('🔵 BLUE lighting applied successfully', 'success');
+                addResult(`Light config: ${JSON.stringify(blueLight, null, 2)}`, 'info');
+                
+                setTimeout(() => {
+                    try {
+                        const currentLight = map.getLight();
+                        addResult(`Current light after BLUE setting: ${JSON.stringify(currentLight, null, 2)}`, 'info');
+                    } catch (e) {
+                        addResult(`Could not get current light: ${e.message}`, 'error');
+                    }
+                }, 100);
+
+            } catch (error) {
+                addResult(`BLUE lighting failed: ${error.message}`, 'error');
+            }
+        }
+
+        function testExtremeAngle() {
+            if (!map) {
+                addResult('Map not initialized', 'error');
+                return;
+            }
+
+            try {
+                const extremeLight = {
+                    anchor: 'viewport',
+                    color: '#ffff00',  // Yellow
+                    intensity: 5.0,    // Maximum intensity
+                    position: [1.15, 0, 5]  // Almost horizontal, very low
+                };
+
+                map.setLight(extremeLight);
+                addResult('⚡ EXTREME angle lighting applied successfully', 'success');
+                addResult(`Light config: ${JSON.stringify(extremeLight, null, 2)}`, 'info');
+                
+                setTimeout(() => {
+                    try {
+                        const currentLight = map.getLight();
+                        addResult(`Current light after EXTREME setting: ${JSON.stringify(currentLight, null, 2)}`, 'info');
+                    } catch (e) {
+                        addResult(`Could not get current light: ${e.message}`, 'error');
+                    }
+                }, 100);
+
+            } catch (error) {
+                addResult(`EXTREME lighting failed: ${error.message}`, 'error');
+            }
+        }
+
+        function clearResults() {
+            resultsDiv.innerHTML = '';
+        }
+
+        // Initialize when page loads
+        window.onload = initMap;
+    </script>
+</body>
+</html>
