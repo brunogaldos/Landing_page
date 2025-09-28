@@ -967,12 +967,12 @@ class DemoFormHandler {
         this.form?.reset();
     }
     
-    handleSubmit(e) {
+    async handleSubmit(e) {
         e.preventDefault();
         
         const formData = new FormData(this.form);
         const email = formData.get('email');
-        const message = formData.get('message');
+        const message = formData.get('message') || 'No message provided';
         const captcha = formData.get('captcha');
         
         // Validate required fields
@@ -981,13 +981,47 @@ class DemoFormHandler {
             return;
         }
         
-        // Simulate form submission
-        this.showMessage('Thank you! We\'ll be in touch soon to schedule your demo.', 'success');
+        // Disable submit button during submission
+        const submitBtn = this.form.querySelector('.btn-submit');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
         
-        // Close modal after success
-        setTimeout(() => {
-            this.closeModal();
-        }, 2000);
+        try {
+            // Send email using Formspree (free email service)
+            const response = await fetch('https://formspree.io/f/mldpgkdj', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    message: message,
+                    _replyto: email,
+                    _subject: 'New Demo Request from Polisense.AI Landing Page',
+                    _to: 'bruno.galdos@rwth-aachen.de'
+                })
+            });
+            
+            if (response.ok) {
+                this.showMessage('Thank you! Demo request sent successfully. We\'ll be in touch soon!', 'success');
+                
+                // Close modal after success
+                setTimeout(() => {
+                    this.closeModal();
+                }, 2000);
+            } else {
+                throw new Error('Failed to send email');
+            }
+            
+        } catch (error) {
+            console.error('Email send error:', error);
+            this.showMessage('Sorry, there was an error sending your request. Please try again or contact us directly.', 'error');
+        } finally {
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Book Demo';
+        }
     }
     
     showMessage(text, type) {
