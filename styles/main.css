@@ -576,14 +576,14 @@ a:visited {
 /* Special styling for View Now button */
 .cta-button[href*="google.com/maps"] {
     background: #44546a;
-    color: white;
+    color: #4effd0;
     border: 2px solid #44546a;
 }
 
 .cta-button[href*="google.com/maps"]:hover,
 .cta-button[href*="google.com/maps"]:focus {
     background: #5a6b7a;
-    color: white;
+    color: #4effd0;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(68, 84, 106, 0.3);
     outline: 2px solid #44546a;
@@ -594,16 +594,16 @@ a:visited {
 #bookDemoBtn {
     background: #44546a;
     color: #4effd0;
-    border: 2px solid #4effd0;
+    border: 2px solid #44546a;
 }
 
 #bookDemoBtn:hover,
 #bookDemoBtn:focus {
-    background: #4effd0;
-    color: #44546a;
+    background: #5a6b7a;
+    color: #4effd0;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(78, 255, 208, 0.3);
-    outline: 2px solid #4effd0;
+    box-shadow: 0 5px 15px rgba(68, 84, 106, 0.3);
+    outline: 2px solid #44546a;
     outline-offset: 2px;
 }
 
@@ -1053,8 +1053,8 @@ a:visited {
 
 .footer {
     width: 100%;
-    min-height: 20vh;
-    padding: 2rem;
+    min-height: 10vh;
+    padding: 1rem 2rem;
     background-color: #44546a;
     background-repeat: no-repeat;
     background-position: center;
@@ -1067,35 +1067,30 @@ a:visited {
 .footer-content {
     max-width: 1200px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 }
 
-.data-sources {
-    color: #FFFFFF;
-    font-size: 0.9rem;
-    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+.footer-logo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
-.data-sources h4 {
-    color: #4effd0;
-    margin-bottom: 1rem;
-    font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+.footer-logo-img {
+    width: 60px;
+    height: 60px;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
 }
 
-.data-sources ul {
-    list-style-type: square;
-    padding-left: 1.5rem;
-}
-
-.data-sources li {
-    margin-bottom: 0.5rem;
+.footer-logo-img:hover {
+    opacity: 1;
 }
 
 .credits {
-    text-align: right;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: #FFFFFF;
     font-family: 'Inter', 'Roboto', 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
 }
