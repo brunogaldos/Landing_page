@@ -282,13 +282,13 @@ class ArequipaScrollMap {
         setTimeout(() => {
             this.waitForMapReady().then(() => {
                 try {
-                    // Enable 3D buildings with natural colors using Standard style configuration
+                    // Enable 3D buildings and trees with natural colors using Standard style configuration
                     this.map.setConfigProperty('basemap', 'show3dObjects', true);
                     
-                    // Set lighting preset for natural appearance
-                    this.map.setConfigProperty('basemap', 'lightPreset', 'day');
+                    // Set dusk lighting preset for atmospheric appearance
+                    this.map.setConfigProperty('basemap', 'lightPreset', 'dusk');
                     
-                    console.log('✅ Standard style 3D buildings configured with natural colors and day lighting');
+                    console.log('✅ Standard style 3D buildings and trees configured with dusk lighting');
                     
                 } catch (error) {
                     console.error('❌ Failed to configure Standard style 3D buildings:', error);
@@ -476,51 +476,11 @@ class ArequipaScrollMap {
     }
 
     /**
-     * Setup map controls
+     * Setup map controls (disabled - no custom controls)
      */
     setupMapControls() {
-        // Create zoom controls
-        const controlsContainer = document.createElement('div');
-        controlsContainer.className = 'map-controls';
-        controlsContainer.innerHTML = `
-            <button class="map-control-btn zoom-in" aria-label="Zoom in">
-                <span aria-hidden="true">+</span>
-            </button>
-            <button class="map-control-btn zoom-out" aria-label="Zoom out">
-                <span aria-hidden="true">−</span>
-            </button>
-        `;
-
-        this.mapContainer.appendChild(controlsContainer);
-
-        // Add event listeners for controls
-        const zoomInBtn = controlsContainer.querySelector('.zoom-in');
-        const zoomOutBtn = controlsContainer.querySelector('.zoom-out');
-
-        zoomInBtn.addEventListener('click', () => {
-            this.map.zoomIn({ duration: 300 });
-            this.announceToScreenReader('Zoomed in');
-        });
-
-        zoomOutBtn.addEventListener('click', () => {
-            this.map.zoomOut({ duration: 300 });
-            this.announceToScreenReader('Zoomed out');
-        });
-
-        // Keyboard support for controls
-        zoomInBtn.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                this.map.zoomIn({ duration: 300 });
-            }
-        });
-
-        zoomOutBtn.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                this.map.zoomOut({ duration: 300 });
-            }
-        });
+        // Custom zoom controls disabled per user request
+        console.log('Custom map controls disabled');
     }
 
     /**
@@ -956,11 +916,116 @@ class ArequipaScrollMap {
 }
 
 /**
+ * Demo Form Modal Handler
+ */
+class DemoFormHandler {
+    constructor() {
+        this.modal = document.getElementById('demoModal');
+        this.openBtn = document.getElementById('bookDemoBtn');
+        this.closeBtn = document.getElementById('demoModalClose');
+        this.overlay = document.getElementById('demoModalOverlay');
+        this.cancelBtn = document.getElementById('cancelBtn');
+        this.form = document.getElementById('demoForm');
+        
+        this.init();
+    }
+    
+    init() {
+        if (!this.modal) return;
+        
+        // Event listeners
+        this.openBtn?.addEventListener('click', () => this.openModal());
+        this.closeBtn?.addEventListener('click', () => this.closeModal());
+        this.overlay?.addEventListener('click', () => this.closeModal());
+        this.cancelBtn?.addEventListener('click', () => this.closeModal());
+        this.form?.addEventListener('submit', (e) => this.handleSubmit(e));
+        
+        // ESC key to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.modal.classList.contains('show')) {
+                this.closeModal();
+            }
+        });
+    }
+    
+    openModal() {
+        this.modal.classList.add('show');
+        this.modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        
+        // Focus first input
+        const firstInput = this.modal.querySelector('input[type="email"]');
+        setTimeout(() => firstInput?.focus(), 100);
+    }
+    
+    closeModal() {
+        this.modal.classList.remove('show');
+        this.modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        
+        // Reset form
+        this.form?.reset();
+    }
+    
+    handleSubmit(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this.form);
+        const email = formData.get('email');
+        const message = formData.get('message');
+        const captcha = formData.get('captcha');
+        
+        // Validate required fields
+        if (!email || !captcha) {
+            this.showMessage('Please fill in all required fields.', 'error');
+            return;
+        }
+        
+        // Simulate form submission
+        this.showMessage('Thank you! We\'ll be in touch soon to schedule your demo.', 'success');
+        
+        // Close modal after success
+        setTimeout(() => {
+            this.closeModal();
+        }, 2000);
+    }
+    
+    showMessage(text, type) {
+        // Create temporary message element
+        const message = document.createElement('div');
+        message.className = `form-message ${type}`;
+        message.textContent = text;
+        message.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            z-index: 10001;
+            animation: slideInRight 0.3s ease-out;
+            ${type === 'success' ? 'background: #4effd0; color: #000;' : 'background: #b65d61;'}
+        `;
+        
+        document.body.appendChild(message);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            message.remove();
+        }, 3000);
+    }
+}
+
+/**
  * Initialize the application when DOM is loaded
  */
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize the application
     new ArequipaScrollMap();
+    
+    // Initialize demo form handler
+    new DemoFormHandler();
 });
 
 /**

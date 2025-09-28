@@ -53,9 +53,9 @@
                 <div class="panel-content">
                     <h3>Cities on the Climate Frontline</h3>
                     <p>Unprepared for the climate crisis
-                        <li>Energy access gap: 760 million people still lack electricity.</li>
-                        <li>High project risk: Nearly half of energy access initiatives fail</li>
-                        <li>Implementation barriers: Fragmented data, complex systems, and limited neighborhood-level insights make it hard for cities to act effectively</li>
+                        <li>Energy gap: 760M people lack electricity</li>
+                        <li>High project risk: ~50% of energy access initiatives fail</li>
+                        <li>Implementation barriers: Fragmented data, complex systems, poor local insights</li>
                     </ul>
                 </div>
             </div>
@@ -63,57 +63,62 @@
             <!-- Panel 3: Architectural Marvels (Right) -->
             <div class="content-panel panel-right" data-map-state="architectural">
                 <div class="panel-content">
-                    <h3>Architectural Marvels</h3>
-                    <p>The historic center of Arequipa showcases magnificent colonial architecture, including the iconic Santa Catalina Monastery, the Cathedral, and numerous baroque churches that define the city's skyline.</p>
-                    <p>The use of white volcanic stone (sillar) gives the city its distinctive appearance and earned it the nickname "La Ciudad Blanca" (The White City).</p>
-                    <p>Key architectural landmarks include the Monastery of Santa Catalina, a 20,000-square-meter complex that served as a cloistered convent for over 400 years.</p>
+                    <h3>AI for Universal Energy Access</h3>
+                    <p>Polisense.AI is an AI Co-pilot for city governments that accelerates energy access</p>
+                    <p>By unifying diverse datasets, reports, web, geospatial, and more into a single platform, it delivers AI-driven analysis, real-time monitoring, and integrates citizen feedback</p>
                 </div>
             </div>
 
             <!-- Panel 4: Visual Journey (Left) -->
             <div class="content-panel panel-left" data-map-state="cultural">
                 <div class="panel-content">
-                    <h3>Visual Journey</h3>
+                    <h3>Powering Cities, Empowering People</h3>
                     <div class="visual-container">
-                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop" 
-                             alt="Arequipa, Peru - Historic cityscape with colonial architecture" 
+                        <img src="bbc_peru.webp" 
+                             alt="Residents gather for dinner in darkness, illuminated only by a solar-powered torch" 
                              class="visual-image">
                     </div>
-                    <p class="visual-credit">Image: Arequipa's historic colonial architecture</p>
+                    <p class="visual-credit">Solar-powered dinner gathering. Photo: BBC</p>
+                    <p>Empowering both governments and communities to prioritize high-impact actions, allocate resources wisely, and deliver reliable, sustainable energy for all.</p>
                 </div>
             </div>
 
             <!-- Panel 5: City Data (Left) -->
             <div class="content-panel panel-left" data-map-state="data">
                 <div class="panel-content">
-                    <h3>City Data</h3>
+                    <h3>Arequipa, Peru: Our first Pilot City</h3>
                     <div class="data-container">
                         <div class="data-item">
                             <span class="data-number">1M+</span>
                             <span class="data-label">Population</span>
                         </div>
                         <div class="data-item">
-                            <span class="data-number">2,335m</span>
-                            <span class="data-label">Elevation</span>
+                            <span class="data-number">~20%</span>
+                            <span class="data-label">Lack Electricity Access</span>
                         </div>
                         <div class="data-item">
-                            <span class="data-number">1540</span>
-                            <span class="data-label">Founded</span>
+                            <span class="data-number solar-data">6.5-7.0</span>
+                            <span class="data-label">Solar kWh/m²/day</span>
                         </div>
                         <div class="data-item">
-                            <span class="data-number">2000</span>
-                            <span class="data-label">UNESCO Heritage</span>
+                            <span class="data-number">2%</span>
+                            <span class="data-label">is Solar of Peru's Energy Mix</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Panel 6: Conclusion (Center) -->
-            <div class="content-panel panel-center" data-map-state="conclusion">
+            <!-- Panel 6: Conclusion (Right) -->
+            <div class="content-panel panel-right" data-map-state="conclusion">
                 <div class="panel-content">
-                    <h3>Modern Arequipa</h3>
-                    <p>Today, Arequipa continues to thrive as a major economic and cultural hub in southern Peru, balancing preservation of its historic heritage with modern development and innovation.</p>
-                    <p>The city serves as a gateway to the Colca Canyon and other natural wonders, making it a vital center for tourism and regional development.</p>
+                    <h3>Bringing Energy, Changing Lives</h3>
+                    <div class="visual-container">
+                        <img src="ninitos.png" 
+                             alt="Children benefiting from energy access solutions" 
+                             class="visual-image">
+                    </div>
+                    <p>Arequipa's energy challenge isn't unique. Across countless cities, energy gaps persist.</p>
+                    <p>Polisense.AI mission is to help those local governments to expand energy access and change people's lives.</p>
                 </div>
             </div>
 
@@ -129,15 +134,49 @@
                 <p>Continue your journey through Arequipa's rich history and culture. Visit the historic center, explore the Santa Catalina Monastery, and discover the city's vibrant culinary scene.</p>
                 <div class="cta-buttons">
                     <a href="https://www.google.com/maps/place/Arequipa,+Peru/@-16.4090,-71.5375,13z" target="_blank" rel="noopener noreferrer" class="cta-button">
-                        View on Google Maps
+                        View Now
                     </a>
-                    <a href="https://whc.unesco.org/en/list/1016/" target="_blank" rel="noopener noreferrer" class="cta-button">
-                        UNESCO Heritage Site
-                    </a>
+                    <button id="bookDemoBtn" class="cta-button">
+                        Book a Demo
+                    </button>
                 </div>
             </div>
         </section>
     </main>
+
+    <!-- Demo Form Modal -->
+    <div id="demoModal" class="demo-modal" role="dialog" aria-labelledby="demoModalTitle" aria-hidden="true">
+        <div class="demo-modal-overlay" id="demoModalOverlay"></div>
+        <div class="demo-modal-content">
+            <div class="demo-modal-header">
+                <h3 id="demoModalTitle">Book a Demo</h3>
+                <button class="demo-modal-close" id="demoModalClose" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="demo-modal-body">
+                <form id="demoForm" class="demo-form">
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required placeholder="your.email@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message (Optional)</label>
+                        <textarea id="message" name="message" rows="4" placeholder="Tell us about your energy access challenges..."></textarea>
+                    </div>
+                    <div class="form-group captcha-group">
+                        <div class="captcha-container">
+                            <input type="checkbox" id="captcha" name="captcha" required>
+                            <label for="captcha">I am not a robot</label>
+                            <div class="captcha-icon">🤖</div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn-submit">Book Demo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer id="footer" class="footer" role="contentinfo">
